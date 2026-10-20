@@ -22,7 +22,9 @@ font, dan tampilan yang dipertahankan.
   dan daftar contoh. Panduan dapat diputar ulang dari menu.
 - Pengaturan untuk huruf vokal dan terjemahan, tersimpan di perangkat.
 - Tema Material 3 terang/gelap dengan palet hijau khas Lafzi.
-- Splash screen yang menyalin database ±15 MB pada peluncuran pertama.
+- Splash screen hanya muncul saat database ±15 MB perlu disalin (peluncuran
+  pertama atau setelah versi database berubah); peluncuran berikutnya langsung
+  ke beranda.
 - Pencarian suara: Android memakai `RecognizerIntent` sistem (jalur yang sama
   dengan versi Java); iOS/macOS memakai `speech_to_text` dengan locale Arab yang
   tersedia di perangkat.

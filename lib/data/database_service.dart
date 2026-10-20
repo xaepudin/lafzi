@@ -47,16 +47,25 @@ class DatabaseService {
     }
   }
 
+  /// Whether the bundled database still has to be copied into the writable
+  /// database directory. True on first launch and after an asset version
+  /// bump; does not open the database.
+  Future<bool> needsInstall() async {
+    final dbPath = p.join(await getDatabasesPath(), databaseName);
+    if (!await File(dbPath).exists()) {
+      return true;
+    }
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getInt(_versionKey) != assetDatabaseVersion;
+  }
+
   Future<Database> _open() async {
     final directory = await getDatabasesPath();
     final dbPath = p.join(directory, databaseName);
     await Directory(directory).create(recursive: true);
 
-    final preferences = await SharedPreferences.getInstance();
-    final installedVersion = preferences.getInt(_versionKey);
-    final exists = await File(dbPath).exists();
-
-    if (!exists || installedVersion != assetDatabaseVersion) {
+    if (await needsInstall()) {
+      final preferences = await SharedPreferences.getInstance();
       await _removeDatabaseFiles(dbPath);
 
       final data = await rootBundle.load(assetPath);

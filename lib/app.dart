@@ -3,12 +3,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/app_theme.dart';
 import 'data/settings_controller.dart';
+import 'screens/home_screen.dart';
 import 'screens/splash_screen.dart';
 
 class LafziApp extends StatelessWidget {
-  const LafziApp({super.key, required this.settings});
+  const LafziApp({super.key, required this.settings, this.showSplash = true});
 
   final SettingsController settings;
+  final bool showSplash;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,9 @@ class LafziApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: SplashScreen(settings: settings),
+      home: showSplash
+          ? SplashScreen(settings: settings)
+          : HomeScreen(settings: settings),
     );
   }
 }
