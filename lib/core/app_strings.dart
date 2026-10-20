@@ -51,9 +51,6 @@ abstract final class AppStrings {
   static const shareText = 'Teks';
   static const toolbarLogo = 'Logo Lafzi';
   static const shareUsing = 'Bagikan Menggunakan';
-  static const shareFooter =
-      '(Dibagikan dari aplikasi Lafzi - https://play.google.com/store/apps/details?id=org.lafzi.lafzi)';
-  static const shareImageFooter = 'Download aplikasi Lafzi di Play Store';
 
   static const gagalMembagi = 'Gagal Membagi';
   static const tidakBisaMuatGambar = 'Tidak bisa memuat gambar';

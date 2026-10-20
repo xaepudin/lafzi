@@ -25,9 +25,7 @@ class ShareService {
     await SharePlus.instance.share(
       ShareParams(
         title: AppStrings.shareUsing,
-        text:
-            '$suratAyat\n\n$arabic\n$translation\n\n'
-            '${AppStrings.shareFooter}',
+        text: '$suratAyat\n\n$arabic\n$translation',
       ),
     );
   }
@@ -38,11 +36,6 @@ class ShareService {
   }) async {
     final media = MediaQuery.of(context);
     final logicalWidth = media.size.width;
-    final logo = const AssetImage('assets/images/logo_lafzi_big.png');
-    await precacheImage(logo, context);
-    if (!context.mounted) {
-      throw StateError('Share context is no longer mounted');
-    }
 
     final bytes = await ScreenshotController().captureFromWidget(
       ShareImageCard(ayat: ayat, width: logicalWidth),

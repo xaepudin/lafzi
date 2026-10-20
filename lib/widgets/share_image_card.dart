@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/app_strings.dart';
 import '../models/ayat_quran.dart';
 
 /// The branded card rendered off-screen when the user shares an ayat as an
@@ -50,29 +49,6 @@ class ShareImageCard extends StatelessWidget {
               fontSize: 14,
               height: 1.4,
             ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/logo_lafzi_big.png',
-                width: 80,
-                height: 80,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(width: 10),
-              const Flexible(
-                child: Text(
-                  AppStrings.shareImageFooter,
-                  style: TextStyle(
-                    color: Color(0xFF005500),
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       ),
