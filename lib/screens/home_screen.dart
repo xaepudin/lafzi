@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _onboardingVisible = false;
   bool _onboardingScheduled = false;
   bool _listening = false;
+  SpeechService? _speechService;
 
   SearchStatus get _status => _searchController.status;
 
@@ -210,10 +211,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _startVoiceSearch() async {
     if (_listening) {
+      // Tapping again stops the session and keeps whatever was recognized.
+      await _speechService?.stop();
       return;
     }
-    setState(() => _listening = true);
+    if (_speechService != null) {
+      return;
+    }
+
     final service = SpeechService();
+    _speechService = service;
+    setState(() => _listening = true);
     try {
       final text = await service.listen(
         onPartial: (partial) {
@@ -229,22 +237,38 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
       if (text == null || text.trim().isEmpty) {
-        final message = service.permissionDenied
-            ? AppStrings.microphonePermissionDenied
-            : service.unavailable
-            ? defaultTargetPlatform == TargetPlatform.android
-                  ? AppStrings.noSpeechAvailable
-                  : AppStrings.speechUnavailable
-            : AppStrings.speechNotDetected;
-        _showMessage(message);
+        _showMessage(_speechFailureMessage(service));
         return;
       }
       _searchFor(text.trim());
+    } catch (error) {
+      debugPrint('Voice search failed: $error');
+      if (mounted) {
+        _showMessage(AppStrings.speechFailed);
+      }
     } finally {
+      _speechService = null;
       if (mounted) {
         setState(() => _listening = false);
       }
     }
+  }
+
+  String _speechFailureMessage(SpeechService service) {
+    debugPrint(
+      'Speech search finished without text: '
+      'failure=${service.failure} detail=${service.errorDetail}',
+    );
+    return switch (service.failure) {
+      SpeechFailure.permission => AppStrings.speechPermissionDenied,
+      SpeechFailure.unavailable =>
+        defaultTargetPlatform == TargetPlatform.android
+            ? AppStrings.noSpeechAvailable
+            : AppStrings.speechUnavailable,
+      SpeechFailure.audio => AppStrings.speechFailed,
+      SpeechFailure.none ||
+      SpeechFailure.noSpeech => AppStrings.speechNotDetected,
+    };
   }
 
   void _openAyat(AyatQuran ayat) {
@@ -314,9 +338,11 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               key: _voiceKey,
               onPressed: _startVoiceSearch,
-              tooltip: AppStrings.searchByVoice,
+              tooltip: _listening
+                  ? AppStrings.stopListening
+                  : AppStrings.searchByVoice,
               icon: Icon(
-                Icons.mic_none,
+                _listening ? Icons.stop_circle : Icons.mic_none,
                 color: _listening ? scheme.primary : scheme.onSurfaceVariant,
               ),
             ),
@@ -373,6 +399,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             Expanded(child: _buildContent()),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              child: _listening
+                  ? _buildListeningBanner(context)
+                  : const SizedBox(width: double.infinity),
+            ),
             SafeArea(
               top: false,
               minimum: const EdgeInsets.only(bottom: 4),
@@ -465,6 +497,52 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         )
                       : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListeningBanner(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      key: const ValueKey('listening-banner'),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Material(
+        color: scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: _startVoiceSearch,
+          borderRadius: BorderRadius.circular(14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.2,
+                    color: scheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    AppStrings.listening,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: scheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.stop_circle_outlined,
+                  size: 20,
+                  color: scheme.onPrimaryContainer,
                 ),
               ],
             ),

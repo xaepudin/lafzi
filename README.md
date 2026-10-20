@@ -155,10 +155,18 @@ jumlah hasil, urutan dokumen, skor, dan rentang highlight identik.
 
 ## Pencarian suara
 
-Pencarian suara memakai paket `speech_to_text` dengan locale `ar-AE` dan hanya
-meminta izin mikrofon. Bergantung pada perangkat, pengenalan suara memerlukan
-koneksi internet dan layanan pengenalan suara Google/Apple. Jika layanan tidak
-tersedia, aplikasi menampilkan pesan kesalahan.
+Android memakai `RecognizerIntent` sistem (jalur yang sama dengan versi Java).
+iOS dan macOS memakai paket `speech_to_text` dengan locale Arab pertama yang
+didukung perangkat (`ar-AE`, `ar-SA`, `ar-EG`, lalu locale `ar*` lainnya).
+Aplikasi meminta izin mikrofon dan pengenalan suara; selama sesi berjalan,
+banner "Mendengarkan…" tampil di atas kolom pencarian dan dapat diketuk untuk
+berhenti. Jika sesi gagal, aplikasi membedakan izin ditolak, layanan tidak
+tersedia, dan mikrofon gagal, lalu menampilkan pesan yang sesuai.
+
+Pengenalan suara Apple memerlukan koneksi internet kecuali perangkat mendukung
+pengenalan luring. Di Simulator iOS, audio input harus aktif (I/O > Audio Input)
+dan Simulator harus diizinkan memakai mikrofon Mac; tanpa itu sesi berhenti
+dengan pesan gagal, bukan hasil kosong.
 
 ## Lisensi
 

@@ -64,8 +64,13 @@ abstract final class AppStrings {
   static const speechUnavailable =
       'Pencarian suara tidak tersedia di perangkat ini';
   static const speechNotDetected = 'Suara tidak terdeteksi. Silakan coba lagi.';
-  static const microphonePermissionDenied =
-      'Izin mikrofon diperlukan untuk pencarian suara';
+  static const speechPermissionDenied =
+      'Izin mikrofon dan pengenalan suara diperlukan untuk pencarian suara';
+  static const speechFailed =
+      'Pencarian suara gagal. Periksa mikrofon dan izin pengenalan suara, '
+      'lalu coba lagi.';
+  static const listening = 'Mendengarkan… Ucapkan lafadz yang dicari';
+  static const stopListening = 'Hentikan pencarian suara';
 
   static const isVocalTitle = 'Perhitungkan huruf vokal';
   static const isVocalSummary =
