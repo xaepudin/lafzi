@@ -17,6 +17,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  // Database setup finishes almost instantly once the file is copied, which
+  // made the splash flash by on desktop. Keep it on screen long enough to
+  // register as a launch screen, while never delaying a failure message.
+  static const Duration _minimumSplashDuration = Duration(milliseconds: 1200);
+
   Object? _error;
 
   @override
@@ -27,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _prepare() async {
     setState(() => _error = null);
+    final stopwatch = Stopwatch()..start();
     try {
       await DatabaseService.instance.initialize();
     } catch (error) {
@@ -34,6 +40,10 @@ class _SplashScreenState extends State<SplashScreen> {
         setState(() => _error = error);
       }
       return;
+    }
+    final remaining = _minimumSplashDuration - stopwatch.elapsed;
+    if (remaining > Duration.zero) {
+      await Future<void>.delayed(remaining);
     }
     if (!mounted) {
       return;
