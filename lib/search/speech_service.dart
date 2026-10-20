@@ -59,11 +59,17 @@ class SpeechService {
   static final RegExp _speechBidiControls = RegExp(
     r'[\u061C\u200B-\u200F\u202A-\u202E\u2060-\u2069\uFEFF]',
   );
+  // SFSpeechRecognizer prefixes some final transcripts with C0 control
+  // characters: "بسم الله" can arrive as "\u000fبسم الله".
+  static final RegExp _speechControlCharacters = RegExp(
+    r'[\u0000-\u001F\u007F-\u009F]',
+  );
   static final RegExp _speechWhitespace = RegExp(r'\s+');
 
-  /// Removes invisible RTL/LTR marks and normalizes whitespace.
+  /// Removes invisible marks/control characters and normalizes whitespace.
   static String cleanRecognizedText(String value) {
     return value
+        .replaceAll(_speechControlCharacters, '')
         .replaceAll(_speechBidiControls, '')
         .replaceAll(_speechWhitespace, ' ')
         .trim();

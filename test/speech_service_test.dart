@@ -9,6 +9,14 @@ void main() {
     );
   });
 
+  test('removes control characters that iOS prepends to transcripts', () {
+    expect(SpeechService.cleanRecognizedText(' \u000Fبسم الله'), 'بسم الله');
+    expect(
+      SpeechService.cleanRecognizedText('\u000Eبسم الله\u000F'),
+      'بسم الله',
+    );
+  });
+
   test('keeps normal Arabic and Latin text unchanged', () {
     expect(SpeechService.cleanRecognizedText('بسم الله'), 'بسم الله');
     expect(SpeechService.cleanRecognizedText('bismillah'), 'bismillah');
