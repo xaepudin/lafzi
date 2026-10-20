@@ -274,8 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openAyat(AyatQuran ayat) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) =>
-            AyatDetailScreen(initialAyatId: ayat.id, settings: widget.settings),
+        builder: (_) => AyatDetailScreen(initialAyatId: ayat.id),
       ),
     );
   }

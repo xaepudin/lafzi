@@ -3,22 +3,16 @@ import 'package:flutter/material.dart';
 import '../core/app_strings.dart';
 import '../data/ayat_repository.dart';
 import '../data/database_service.dart';
-import '../data/settings_controller.dart';
 import '../models/ayat_quran.dart';
 import '../share/share_service.dart';
 import '../widgets/highlighted_arabic_text.dart';
 
 class AyatDetailScreen extends StatefulWidget {
-  const AyatDetailScreen({
-    super.key,
-    required this.initialAyatId,
-    required this.settings,
-  });
+  const AyatDetailScreen({super.key, required this.initialAyatId});
 
   static const int ayatCount = 6236;
 
   final int initialAyatId;
-  final SettingsController settings;
 
   @override
   State<AyatDetailScreen> createState() => _AyatDetailScreenState();
@@ -284,10 +278,7 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
               onPageChanged: _onPageChanged,
               itemBuilder: (context, index) {
                 final ayatId = index + 1;
-                return _AyatPage(
-                  future: _futureFor(ayatId),
-                  showTranslation: widget.settings.showTranslation,
-                );
+                return _AyatPage(future: _futureFor(ayatId));
               },
             ),
           ),
@@ -336,10 +327,9 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
 }
 
 class _AyatPage extends StatelessWidget {
-  const _AyatPage({required this.future, required this.showTranslation});
+  const _AyatPage({required this.future});
 
   final Future<AyatQuran?> future;
-  final bool showTranslation;
 
   @override
   Widget build(BuildContext context) {
@@ -390,16 +380,16 @@ class _AyatPage extends StatelessWidget {
                   HighlightedArabicText(text: ayat.displayArabic, fontSize: 28),
                   const SizedBox(height: 16),
                   Divider(color: scheme.outlineVariant),
-                  if (showTranslation) ...[
-                    const SizedBox(height: 16),
-                    Text(
-                      ayat.ayatIndonesian,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                        height: 1.5,
-                      ),
+                  // The detail screen always shows the translation; the
+                  // "Tampilkan terjemahan" setting only applies to results.
+                  const SizedBox(height: 16),
+                  Text(
+                    ayat.ayatIndonesian,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      height: 1.5,
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
