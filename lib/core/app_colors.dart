@@ -91,16 +91,20 @@ class LafziColors extends ThemeExtension<LafziColors> {
   final Color highlight;
   final Color splashBackground;
 
+  /// Matches the background baked into `app_icon.png`, so the splash icon
+  /// blends into the splash background on every platform.
+  static const splashGreen = Color(0xFF005500);
+
   static const light = LafziColors(
     searchBackground: Color(0xFFEBF2E6),
     highlight: Color(0x66FFE082),
-    splashBackground: Color(0xFFF7FBF3),
+    splashBackground: splashGreen,
   );
 
   static const dark = LafziColors(
     searchBackground: Color(0xFF1B211A),
     highlight: Color(0x667A6A00),
-    splashBackground: Color(0xFF11140F),
+    splashBackground: splashGreen,
   );
 
   @override

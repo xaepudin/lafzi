@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/app_colors.dart';
 import '../core/app_strings.dart';
@@ -50,47 +51,56 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final colors = context.lafziColors;
 
-    return Scaffold(
-      backgroundColor: colors.splashBackground,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/logo_lafzi_big.png',
-                  width: 260,
-                  fit: BoxFit.contain,
-                  semanticLabel: AppStrings.appName,
-                ),
-                const SizedBox(height: 40),
-                if (_error == null)
-                  SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      color: scheme.primary,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      // The splash is always dark green, in both light and dark mode.
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: colors.splashBackground,
+        body: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Square app icon on its own background: never stretched.
+                  Image.asset(
+                    'assets/images/app_icon.png',
+                    width: 160,
+                    height: 160,
+                    fit: BoxFit.contain,
+                    semanticLabel: AppStrings.appName,
+                  ),
+                  const SizedBox(height: 32),
+                  if (_error == null)
+                    SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    )
+                  else ...[
+                    const Text(
+                      'Gagal menyiapkan database',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
                     ),
-                  )
-                else ...[
-                  Text(
-                    'Gagal menyiapkan database',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: scheme.error),
-                  ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: _prepare,
-                    child: const Text('Coba lagi'),
-                  ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      onPressed: _prepare,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: LafziColors.splashGreen,
+                      ),
+                      child: const Text('Coba lagi'),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
