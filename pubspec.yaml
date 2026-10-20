@@ -1,0 +1,67 @@
+name: lafzi
+description: "Lafzi — Quran lafadz search by Indonesian pronunciation, built with Flutter."
+publish_to: 'none'
+version: 2.1.6+16
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  image: ^4.12.0
+  package_info_plus: ^10.2.2
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  screenshot: ^3.0.0
+  share_plus: ^13.3.1
+  shared_preferences: ^2.5.6
+  speech_to_text: ^7.5.0
+  sqflite: ^2.4.4+2
+  url_launcher: ^6.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
+  sqflite_common_ffi: ^2.4.4
+  sqlite3: ^3.4.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/databases/lafzi.sqlite
+    - assets/images/icon_lafzi.png
+    - assets/images/logo_lafzi_big.png
+    - assets/images/logo_lafzi_small.png
+
+  fonts:
+    - family: MeQuran
+      fonts:
+        - asset: assets/fonts/me_quran.ttf
+
+# Host tests use sqflite_common_ffi, whose bundled SQLite is compiled without
+# FTS4. The Lafzi database uses an FTS4 table, so tests load the system SQLite
+# library (Android and iOS ship an FTS4-capable SQLite as well).
+hooks:
+  user_defines:
+    sqlite3:
+      source: system
+
+flutter_launcher_icons:
+  image_path: assets/images/app_icon.png
+  android: true
+  ios: true
+  macos:
+    image_path: assets/images/app_icon.png
+    generate: true
+  remove_alpha_ios: true
+  min_sdk_android: 24
