@@ -39,9 +39,8 @@ flutter:
 
   assets:
     - assets/databases/lafzi.sqlite
-    - assets/images/icon_lafzi.png
-    - assets/images/logo_lafzi_big.png
-    - assets/images/logo_lafzi_small.png
+    # Bundle the whole directory so a new image cannot be forgotten here.
+    - assets/images/
 
   fonts:
     - family: MeQuran
