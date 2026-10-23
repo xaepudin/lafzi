@@ -9,9 +9,8 @@ class DatabaseService {
 
   static final DatabaseService instance = DatabaseService._();
 
-  AyatDb get database => throw UnsupportedError(
-    'The database is not available on this platform',
-  );
+  AyatDb get database =>
+      throw UnsupportedError('The database is not available on this platform');
 
   Future<void> initialize() async {
     throw UnsupportedError('The database is not available on this platform');

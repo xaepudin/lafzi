@@ -10,6 +10,7 @@ class AyatCard extends StatelessWidget {
     required this.ayat,
     required this.position,
     required this.showTranslation,
+    this.showSimilarity = false,
     this.onTap,
     this.onLongPress,
   });
@@ -17,6 +18,10 @@ class AyatCard extends StatelessWidget {
   final AyatQuran ayat;
   final int position;
   final bool showTranslation;
+
+  /// Whether the relevance percentage and bar are shown. Disabled by default;
+  /// users can enable it in Settings.
+  final bool showSimilarity;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
@@ -72,7 +77,7 @@ class AyatCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (ayat.relevance > 0) ...[
+                    if (showSimilarity && ayat.relevance > 0) ...[
                       const SizedBox(width: 8),
                       Text(
                         '${ayat.relevance.round()}%',
@@ -84,7 +89,7 @@ class AyatCard extends StatelessWidget {
                     ],
                   ],
                 ),
-                if (ayat.relevance > 0) ...[
+                if (showSimilarity && ayat.relevance > 0) ...[
                   const SizedBox(height: 8),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(2),

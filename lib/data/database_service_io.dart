@@ -49,7 +49,10 @@ class DatabaseService {
   /// database directory. True on first launch and after an asset version
   /// bump; does not open the database.
   Future<bool> needsInstall() async {
-    final dbPath = p.join(await getDatabasesPath(), DatabaseMetadata.databaseName);
+    final dbPath = p.join(
+      await getDatabasesPath(),
+      DatabaseMetadata.databaseName,
+    );
     if (!await File(dbPath).exists()) {
       return true;
     }

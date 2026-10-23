@@ -74,6 +74,10 @@ abstract final class AppStrings {
       'Jika nonaktif, huruf vokal (AIUEO) tidak akan diperhitungkan '
       'dalam pencarian. Contohnya, pencarian "munafiqun" akan '
       'menyertakan juga "munafiqin"';
+  static const showSimilarityTitle = 'Tampilkan tingkat kesamaan';
+  static const showSimilaritySummary =
+      'Persentase kecocokan kata kunci ditampilkan pada setiap kartu hasil.';
+
   static const showTranslationTitle = 'Tampilkan terjemahan';
   static const showTranslationSummary =
       'Tampilkan terjemahan bahasa Indonesia di hasil pencarian';

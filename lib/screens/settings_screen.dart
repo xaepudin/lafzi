@@ -39,6 +39,13 @@ class SettingsScreen extends StatelessWidget {
                   title: const Text(AppStrings.showTranslationTitle),
                   subtitle: const Text(AppStrings.showTranslationSummary),
                 ),
+                const Divider(indent: 16, endIndent: 16),
+                SwitchListTile.adaptive(
+                  value: settings.showSimilarity,
+                  onChanged: settings.setShowSimilarity,
+                  title: const Text(AppStrings.showSimilarityTitle),
+                  subtitle: const Text(AppStrings.showSimilaritySummary),
+                ),
               ],
             );
           },

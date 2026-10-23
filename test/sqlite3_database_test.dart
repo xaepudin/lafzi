@@ -41,46 +41,49 @@ void main() {
     expect(web.mappingPositions, native.mappingPositions);
   });
 
-  test('Latin and Arabic searches are identical through both adapters', () async {
-    final nativeEngine = SearchEngine(AyatRepository(sqfliteDb));
-    final webEngine = SearchEngine(AyatRepository(sqlite3Db));
+  test(
+    'Latin and Arabic searches are identical through both adapters',
+    () async {
+      final nativeEngine = SearchEngine(AyatRepository(sqfliteDb));
+      final webEngine = SearchEngine(AyatRepository(sqlite3Db));
 
-    for (final query in const [
-      'bismillah',
-      'alhamdulillah',
-      'arrahmaan',
-      'بسم الله',
-      'الرحمن',
-    ]) {
-      for (final isVocal in const [true, false]) {
-        final nativeResults = await nativeEngine.search(
-          query,
-          isVocal: isVocal,
-        );
-        final webResults = await webEngine.search(query, isVocal: isVocal);
+      for (final query in const [
+        'bismillah',
+        'alhamdulillah',
+        'arrahmaan',
+        'بسم الله',
+        'الرحمن',
+      ]) {
+        for (final isVocal in const [true, false]) {
+          final nativeResults = await nativeEngine.search(
+            query,
+            isVocal: isVocal,
+          );
+          final webResults = await webEngine.search(query, isVocal: isVocal);
 
-        expect(
-          webResults.map((ayat) => ayat.id),
-          nativeResults.map((ayat) => ayat.id),
-          reason: 'ids for "$query" (vocal: $isVocal)',
-        );
-        for (var i = 0; i < nativeResults.length; i++) {
           expect(
-            webResults[i].score,
-            nativeResults[i].score,
-            reason: 'score for "$query" result $i',
+            webResults.map((ayat) => ayat.id),
+            nativeResults.map((ayat) => ayat.id),
+            reason: 'ids for "$query" (vocal: $isVocal)',
           );
-          expect(
-            webResults[i].highlightPositions
-                .map((pos) => '${pos.start}:${pos.end}')
-                .toList(),
-            nativeResults[i].highlightPositions
-                .map((pos) => '${pos.start}:${pos.end}')
-                .toList(),
-            reason: 'highlights for "$query" result $i',
-          );
+          for (var i = 0; i < nativeResults.length; i++) {
+            expect(
+              webResults[i].score,
+              nativeResults[i].score,
+              reason: 'score for "$query" result $i',
+            );
+            expect(
+              webResults[i].highlightPositions
+                  .map((pos) => '${pos.start}:${pos.end}')
+                  .toList(),
+              nativeResults[i].highlightPositions
+                  .map((pos) => '${pos.start}:${pos.end}')
+                  .toList(),
+              reason: 'highlights for "$query" result $i',
+            );
+          }
         }
       }
-    }
-  });
+    },
+  );
 }

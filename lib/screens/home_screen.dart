@@ -660,6 +660,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ayat: ayat,
           position: index + 1,
           showTranslation: widget.settings.showTranslation,
+          showSimilarity: widget.settings.showSimilarity,
           onTap: () => _openAyat(ayat),
           onLongPress: () => _copyAyat(ayat),
         );

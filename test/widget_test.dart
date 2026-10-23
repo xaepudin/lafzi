@@ -45,9 +45,23 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 
-  testWidgets('result card shows the relevance percentage when scored', (
-    tester,
-  ) async {
+  testWidgets('result card shows relevance when enabled', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        AyatCard(
+          ayat: _sampleAyat()..relevance = 79,
+          position: 2,
+          showTranslation: false,
+          showSimilarity: true,
+        ),
+      ),
+    );
+
+    expect(find.text('79%'), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('result card hides relevance by default', (tester) async {
     await tester.pumpWidget(
       _wrap(
         AyatCard(
@@ -58,15 +72,22 @@ void main() {
       ),
     );
 
-    expect(find.text('79%'), findsOneWidget);
-    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(find.textContaining('%'), findsNothing);
+    expect(find.byType(LinearProgressIndicator), findsNothing);
   });
 
   testWidgets('result card hides relevance for unscored results', (
     tester,
   ) async {
     await tester.pumpWidget(
-      _wrap(AyatCard(ayat: _sampleAyat(), position: 2, showTranslation: false)),
+      _wrap(
+        AyatCard(
+          ayat: _sampleAyat(),
+          position: 2,
+          showTranslation: false,
+          showSimilarity: true,
+        ),
+      ),
     );
 
     expect(find.textContaining('%'), findsNothing);

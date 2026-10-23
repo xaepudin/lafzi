@@ -18,9 +18,7 @@ final class Sqlite3AyatDb implements AyatDb {
     List<Object?> args = const [],
   ]) async {
     final rows = _db.select(sql, args);
-    return [
-      for (final row in rows) Map<String, Object?>.from(row),
-    ];
+    return [for (final row in rows) Map<String, Object?>.from(row)];
   }
 
   @override
