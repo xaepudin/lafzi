@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_strings.dart';
+import '../core/platform_capabilities.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -21,8 +22,10 @@ class HelpScreen extends StatelessWidget {
     final spans = <InlineSpan>[
       TextSpan(text: AppStrings.helpHeaderOrder, style: headingStyle),
       TextSpan(text: '\n${AppStrings.helpOrderBody}\n\n', style: bodyStyle),
-      TextSpan(text: AppStrings.helpHeaderVoice, style: headingStyle),
-      TextSpan(text: '\n${AppStrings.helpVoiceBody}\n\n', style: bodyStyle),
+      if (PlatformCapabilities.voiceSearch) ...[
+        TextSpan(text: AppStrings.helpHeaderVoice, style: headingStyle),
+        TextSpan(text: '\n${AppStrings.helpVoiceBody}\n\n', style: bodyStyle),
+      ],
       TextSpan(text: AppStrings.helpHeaderMismatch, style: headingStyle),
       TextSpan(text: '\n${AppStrings.helpMismatchBody}\n', style: bodyStyle),
       for (final bullet in AppStrings.helpBullets)

@@ -40,8 +40,9 @@ font, dan tampilan yang dipertahankan.
   Chrome). Database dibaca lewat SQLite WebAssembly dan dimuat ke memori dari
   aset, lalu dibuka read-only. `web/sqlite3.wasm` adalah build khusus dengan
   FTS3/FTS4 karena build bawaan `sqlite3` hanya berisi FTS5; lihat
-  `tool/build_sqlite3_wasm.sh`. Pencarian suara memakai Web Speech API
-  (Chrome/Edge, HTTPS atau localhost), dan berbagi gambar memakai share sheet
+  `tool/build_sqlite3_wasm.sh`. Pencarian suara disembunyikan di web karena
+  dukungan Web Speech API tidak konsisten; panduan awal dan halaman bantuan
+  otomatis tidak menampilkan langkah suara. Berbagi gambar memakai share sheet
   peramban atau jatuh ke unduhan.
 - **Linux/Windows** — belum dikonfigurasi. Windows memiliki dukungan suara dari
   `speech_to_text`, tetapi database perlu `sqflite_common_ffi` dengan SQLite
@@ -205,9 +206,12 @@ jumlah hasil, urutan dokumen, skor, dan rentang highlight identik.
 Android memakai `RecognizerIntent` sistem (jalur yang sama dengan versi Java).
 iOS dan macOS memakai paket `speech_to_text` dengan locale Arab pertama yang
 didukung perangkat (`ar-AE`, `ar-SA`, `ar-EG`, lalu locale `ar*` lainnya).
-Di web, `speech_to_text` memakai Web Speech API peramban; dukungan locale Arab
-dan ketersediaan mikrofon bergantung pada peramban (Chrome/Edge), dan halaman
-harus disajikan lewat HTTPS atau localhost.
+Di web, tombol mikrofon tidak ditampilkan. Implementasinya tetap ada di balik
+`PlatformCapabilities.voiceSearch`, tetapi `speech_to_text` memakai Web Speech
+API yang dukungan locale Arab-nya tidak konsisten antarperamban, sehingga fitur
+ini sengaja dinonaktifkan. Bila nanti diaktifkan lagi, halaman harus disajikan
+lewat HTTPS atau localhost dan panduan/bantuan akan otomatis menampilkan
+langkah suara kembali.
 Aplikasi meminta izin mikrofon dan pengenalan suara; selama sesi berjalan,
 banner "Mendengarkan…" tampil di atas kolom pencarian dan dapat diketuk untuk
 berhenti. Jika sesi gagal, aplikasi membedakan izin ditolak, layanan tidak

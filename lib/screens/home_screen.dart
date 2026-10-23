@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../core/app_colors.dart';
 import '../core/app_strings.dart';
+import '../core/platform_capabilities.dart';
 import '../data/ayat_repository.dart';
 import '../data/database_service.dart';
 import '../data/onboarding_store.dart';
@@ -141,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final anchors = <OnboardingAnchor, GlobalKey>{
       OnboardingAnchor.search: _searchBarKey,
-      OnboardingAnchor.voice: _voiceKey,
+      if (PlatformCapabilities.voiceSearch) OnboardingAnchor.voice: _voiceKey,
     };
     if (atStart) {
       anchors[OnboardingAnchor.examples] = _examplesKey;
@@ -210,6 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _startVoiceSearch() async {
+    if (!PlatformCapabilities.voiceSearch) {
+      return;
+    }
     if (_listening) {
       // Tapping again stops the session and keeps whatever was recognized.
       await _speechService?.stop();
@@ -334,17 +338,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           actions: [
-            IconButton(
-              key: _voiceKey,
-              onPressed: _startVoiceSearch,
-              tooltip: _listening
-                  ? AppStrings.stopListening
-                  : AppStrings.searchByVoice,
-              icon: Icon(
-                _listening ? Icons.stop_circle : Icons.mic_none,
-                color: _listening ? scheme.primary : scheme.onSurfaceVariant,
+            if (PlatformCapabilities.voiceSearch)
+              IconButton(
+                key: _voiceKey,
+                onPressed: _startVoiceSearch,
+                tooltip: _listening
+                    ? AppStrings.stopListening
+                    : AppStrings.searchByVoice,
+                icon: Icon(
+                  _listening ? Icons.stop_circle : Icons.mic_none,
+                  color: _listening ? scheme.primary : scheme.onSurfaceVariant,
+                ),
               ),
-            ),
             PopupMenuButton<String>(
               tooltip: 'Menu',
               icon: Icon(Icons.more_vert, color: scheme.onSurfaceVariant),
