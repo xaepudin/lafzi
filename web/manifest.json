@@ -1,0 +1,36 @@
+{
+    "name": "Lafzi — Pencarian Lafadz Al-Qur'an",
+    "short_name": "Lafzi",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#005500",
+    "theme_color": "#005500",
+    "description": "Pencarian lafadz Al-Qur'an berdasarkan pelafalan bahasa Indonesia.",
+    "lang": "id",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

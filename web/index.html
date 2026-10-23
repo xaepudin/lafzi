@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lafzi — pencarian lafadz Al-Qur'an berdasarkan pelafalan bahasa Indonesia.">
+  <meta name="theme-color" content="#005500">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Lafzi">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Lafzi</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!--
+    Static launch screen shown while the Flutter engine starts. The first
+    frame removes it; if bootstrapping fails the message stays visible.
+  -->
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #005500;
+    }
+
+    #launch {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-align: center;
+      padding: 32px;
+      box-sizing: border-box;
+    }
+
+    #launch img {
+      width: 160px;
+      height: 160px;
+      border-radius: 24px;
+    }
+
+    #launch .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: launch-spin 900ms linear infinite;
+    }
+
+    @keyframes launch-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #launch .spinner { animation-duration: 2400ms; }
+    }
+
+    #launch p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div id="launch">
+    <img src="icons/Icon-192.png" alt="Lafzi">
+    <div class="spinner" role="progressbar" aria-label="Memuat Lafzi"></div>
+    <p>Menyiapkan Lafzi…</p>
+  </div>
+
+  <noscript>Lafzi memerlukan JavaScript untuk berjalan.</noscript>
+
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var launch = document.getElementById('launch');
+      if (launch) {
+        launch.remove();
+      }
+    });
+  </script>
+
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

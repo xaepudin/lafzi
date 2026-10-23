@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:sqflite/sqflite.dart';
-
 import '../models/ayat_quran.dart';
 import '../models/quran_text_hit.dart';
 import '../search/search_scoring.dart';
+import 'ayat_db.dart';
 
 /// SQLite access for the bundled Lafzi database.
 ///
@@ -14,7 +13,7 @@ import '../search/search_scoring.dart';
 class AyatRepository {
   AyatRepository(this._db);
 
-  final Database _db;
+  final AyatDb _db;
 
   static const _columns = <String>[
     '_id',
@@ -27,12 +26,9 @@ class AyatRepository {
   ];
 
   Future<AyatQuran?> getAyat(int id, {bool isVocal = true}) async {
-    final rows = await _db.query(
-      'ayat_quran',
-      columns: [..._columns, _mappingColumn(isVocal)],
-      where: '_id = ?',
-      whereArgs: [id],
-      limit: 1,
+    final rows = await _db.select(
+      'SELECT ${_columnList(isVocal)} FROM ayat_quran WHERE _id = ? LIMIT 1',
+      [id],
     );
     if (rows.isEmpty) {
       return null;
@@ -55,11 +51,10 @@ class AyatRepository {
           : unique.length;
       final chunk = unique.sublist(start, end);
       final placeholders = List.filled(chunk.length, '?').join(',');
-      final rows = await _db.query(
-        'ayat_quran',
-        columns: [..._columns, _mappingColumn(isVocal)],
-        where: '_id IN ($placeholders)',
-        whereArgs: chunk,
+      final rows = await _db.select(
+        'SELECT ${_columnList(isVocal)} FROM ayat_quran '
+        'WHERE _id IN ($placeholders)',
+        chunk,
       );
       for (final row in rows) {
         final ayat = _readAyat(row, isVocal: isVocal);
@@ -74,12 +69,9 @@ class AyatRepository {
     required bool isVocal,
   }) async {
     final table = isVocal ? 'vocal_index' : 'nonvocal_index';
-    final rows = await _db.query(
-      table,
-      columns: const ['term', 'post'],
-      where: 'term = ?',
-      whereArgs: [term],
-      limit: 1,
+    final rows = await _db.select(
+      'SELECT term, post FROM $table WHERE term = ? LIMIT 1',
+      [term],
     );
     if (rows.isEmpty) {
       return null;
@@ -112,7 +104,7 @@ class AyatRepository {
       return const [];
     }
 
-    final rows = await _db.rawQuery(
+    final rows = await _db.select(
       '''
 SELECT
   docid,
@@ -163,6 +155,9 @@ WHERE text_reverse MATCH ?
 
   static String _mappingColumn(bool isVocal) =>
       isVocal ? 'vocal_mapping_position' : 'nonvocal_mapping_position';
+
+  static String _columnList(bool isVocal) =>
+      [..._columns, _mappingColumn(isVocal)].join(', ');
 
   AyatQuran _readAyat(Map<String, Object?> row, {required bool isVocal}) {
     final mapping = row[_mappingColumn(isVocal)] as String?;

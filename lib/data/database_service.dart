@@ -1,105 +1,11 @@
-import 'dart:io';
+/// Opens the bundled Lafzi database on the current platform.
+///
+/// Native platforms copy the asset into the app database directory and open it
+/// with `sqflite`; the web build starts SQLite as WebAssembly and loads the
+/// asset into an in-memory file system. Both implementations expose the same
+/// small [AyatDb] interface.
+library;
 
-import 'package:flutter/services.dart';
-import 'package:path/path.dart' as p;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-
-/// Copies the bundled 15 MB Quran database into the app's database directory
-/// on first launch (or after a database version bump) and opens it read-only.
-class DatabaseService {
-  DatabaseService._();
-
-  static final DatabaseService instance = DatabaseService._();
-
-  static const assetPath = 'assets/databases/lafzi.sqlite';
-  static const databaseName = 'lafzi.sqlite';
-  static const assetDatabaseVersion = 3;
-  static const _versionKey = 'lafzi_database_asset_version';
-
-  Database? _database;
-  Future<Database>? _opening;
-
-  Database get database {
-    final db = _database;
-    if (db == null) {
-      throw StateError('DatabaseService.initialize() has not completed');
-    }
-    return db;
-  }
-
-  Future<void> initialize() async {
-    final existing = _database;
-    if (existing != null && existing.isOpen) {
-      return;
-    }
-    final opening = _opening;
-    if (opening != null) {
-      await opening;
-      return;
-    }
-    final future = _open();
-    _opening = future;
-    try {
-      await future;
-    } finally {
-      _opening = null;
-    }
-  }
-
-  /// Whether the bundled database still has to be copied into the writable
-  /// database directory. True on first launch and after an asset version
-  /// bump; does not open the database.
-  Future<bool> needsInstall() async {
-    final dbPath = p.join(await getDatabasesPath(), databaseName);
-    if (!await File(dbPath).exists()) {
-      return true;
-    }
-    final preferences = await SharedPreferences.getInstance();
-    return preferences.getInt(_versionKey) != assetDatabaseVersion;
-  }
-
-  Future<Database> _open() async {
-    final directory = await getDatabasesPath();
-    final dbPath = p.join(directory, databaseName);
-    await Directory(directory).create(recursive: true);
-
-    if (await needsInstall()) {
-      final preferences = await SharedPreferences.getInstance();
-      await _removeDatabaseFiles(dbPath);
-
-      final data = await rootBundle.load(assetPath);
-      final bytes = data.buffer.asUint8List(
-        data.offsetInBytes,
-        data.lengthInBytes,
-      );
-
-      final tempFile = File('$dbPath.tmp');
-      await tempFile.writeAsBytes(bytes, flush: true);
-      if (await File(dbPath).exists()) {
-        await File(dbPath).delete();
-      }
-      await tempFile.rename(dbPath);
-
-      await preferences.setInt(_versionKey, assetDatabaseVersion);
-    }
-
-    final db = await openDatabase(dbPath, readOnly: true);
-    _database = db;
-    return db;
-  }
-
-  Future<void> _removeDatabaseFiles(String dbPath) async {
-    for (final suffix in const ['', '-wal', '-shm', '-journal']) {
-      final file = File('$dbPath$suffix');
-      if (await file.exists()) {
-        await file.delete();
-      }
-    }
-  }
-
-  Future<void> close() async {
-    await _database?.close();
-    _database = null;
-  }
-}
+export 'database_service_stub.dart'
+    if (dart.library.io) 'database_service_io.dart'
+    if (dart.library.js_interop) 'database_service_web.dart';

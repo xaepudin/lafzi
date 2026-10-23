@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +32,13 @@ class SpeechService {
   static const _androidChannel = MethodChannel(
     'org.lafzi.lafzi.flutter/speech',
   );
+
+  // `dart:io`'s Platform is not available on the web; the browser uses the
+  // `speech_to_text` Web Speech API implementation instead.
+  static bool get _isAndroid =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  static bool get _isIOS =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   // Platform calls must not leave the UI stuck forever: a permission dialog
   // dismissed while the app is in the background never answers its caller.
@@ -75,7 +81,7 @@ class SpeechService {
         .trim();
   }
 
-  bool get isListening => !Platform.isAndroid && _speech.isListening;
+  bool get isListening => !_isAndroid && _speech.isListening;
 
   /// Failure category of the most recent [listen] call.
   SpeechFailure get failure => _failure;
@@ -98,7 +104,7 @@ class SpeechService {
     final completer = _completer = Completer<String?>();
 
     try {
-      if (Platform.isAndroid) {
+      if (_isAndroid) {
         return await _listenAndroid(completer);
       }
       return await _listenPlugin(completer, onPartial);
@@ -198,7 +204,7 @@ class SpeechService {
               // 0 until the session activates on some simulator/route setups,
               // which makes the plugin's AVAudioEngine setup throw and the
               // session fail before it ever reports `listening`.
-              sampleRate: Platform.isIOS ? 44100 : 0,
+              sampleRate: _isIOS ? 44100 : 0,
               partialResults: true,
               listenMode: ListenMode.search,
               cancelOnError: true,
@@ -348,7 +354,7 @@ class SpeechService {
 
   Future<void> _stopPlatform() async {
     try {
-      if (!Platform.isAndroid && _speech.isListening) {
+      if (!_isAndroid && _speech.isListening) {
         await _speech.stop().timeout(_stopTimeout);
       }
     } catch (error) {
@@ -358,7 +364,7 @@ class SpeechService {
 
   /// Ends the active session and keeps whatever text was recognized so far.
   Future<void> stop() async {
-    if (Platform.isAndroid) {
+    if (_isAndroid) {
       return;
     }
     await _stopPlatform();

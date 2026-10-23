@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,7 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
   // Database setup finishes almost instantly once the file is copied, which
   // made the splash flash by on desktop. Keep it on screen long enough to
   // register as a launch screen, while never delaying a failure message.
-  static const Duration _minimumSplashDuration = Duration(milliseconds: 1200);
+  //
+  // On the web the database is fetched and opened on every load, so the
+  // spinner is already meaningful and the artificial delay can be shorter.
+  static Duration get _minimumSplashDuration => kIsWeb
+      ? const Duration(milliseconds: 250)
+      : const Duration(milliseconds: 1200);
 
   Object? _error;
 

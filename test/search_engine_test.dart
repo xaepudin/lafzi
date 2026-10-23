@@ -1,17 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lafzi/data/ayat_db.dart';
 import 'package:lafzi/data/ayat_repository.dart';
 import 'package:lafzi/search/search_engine.dart';
 
 import 'test_database.dart';
 
 void main() {
-  late DatabaseLike db;
+  late AyatDb db;
   late AyatRepository repository;
   late SearchEngine engine;
 
   setUpAll(() async {
     db = await openTestDatabase();
-    repository = AyatRepository(db.database);
+    repository = AyatRepository(db);
     engine = SearchEngine(repository);
   });
 

@@ -36,10 +36,13 @@ font, dan tampilan yang dipertahankan.
   fisik diperlukan signing/team Apple.
 - **macOS** — didukung; `flutter run -d macos` dan `flutter build macos` berhasil.
   Aplikasi meminta izin mikrofon/pengenalan suara macOS.
-- **Web** — belum didukung. Lapisan data saat ini memakai `sqflite` dan `dart:io`
-  serta tabel FTS4 SQLite; web memerlukan penggantian lapisan database dan
-  pencarian Arab (misalnya SQLite WASM dengan FTS4 atau indeks Arab murni Dart).
-  Plugin suara dan berbagi sendiri sudah memiliki dukungan web.
+- **Web** — didukung (Chrome, Edge, Firefox, dan Safari modern; diuji di
+  Chrome). Database dibaca lewat SQLite WebAssembly dan dimuat ke memori dari
+  aset, lalu dibuka read-only. `web/sqlite3.wasm` adalah build khusus dengan
+  FTS3/FTS4 karena build bawaan `sqlite3` hanya berisi FTS5; lihat
+  `tool/build_sqlite3_wasm.sh`. Pencarian suara memakai Web Speech API
+  (Chrome/Edge, HTTPS atau localhost), dan berbagi gambar memakai share sheet
+  peramban atau jatuh ke unduhan.
 - **Linux/Windows** — belum dikonfigurasi. Windows memiliki dukungan suara dari
   `speech_to_text`, tetapi database perlu `sqflite_common_ffi` dengan SQLite
   ber-FTS4; Linux belum memiliki dukungan suara dari plugin tersebut.
@@ -50,6 +53,8 @@ font, dan tampilan yang dipertahankan.
 - Android SDK 36 dan JDK 17+ untuk target Android
 - Xcode 27 dan CocoaPods untuk target iOS
 - Perangkat/emulator Android 7.0 (API 24) atau lebih baru
+- Untuk web: server yang menyajikan berkas `.wasm` dengan tipe
+  `application/wasm` (server pengembangan Flutter sudah melakukannya)
 
 ## Menjalankan
 
@@ -63,6 +68,12 @@ Untuk perangkat tertentu:
 ```bash
 flutter devices
 flutter run -d <device-id>
+```
+
+Untuk web:
+
+```bash
+flutter run -d chrome
 ```
 
 ## Build
@@ -101,6 +112,26 @@ Build iOS (simulator):
 flutter build ios --simulator
 ```
 
+Build web:
+
+```bash
+flutter build web --release
+```
+
+Hasilnya ada di `build/web`. Sajikan direktori itu sebagai situs statis dan
+pastikan `.wasm` dikirim sebagai `application/wasm`, karena modul SQLite dimuat
+dengan `WebAssembly.instantiateStreaming`. Pada kunjungan pertama, halaman
+mengunduh `lafzi.sqlite` (16 MB; sekitar 4,8 MB bila server mengaktifkan gzip)
+lalu menyalinnya ke memori. Kunjungan berikutnya memakai cache HTTP dan service
+worker peramban.
+
+Berkas `web/sqlite3.wasm` sudah disertakan di repositori. Jika versi paket
+`sqlite3` di `pubspec.yaml` dinaikkan, bangun ulang dengan:
+
+```bash
+tool/build_sqlite3_wasm.sh
+```
+
 ## Tes
 
 ```bash
@@ -116,8 +147,11 @@ flutter test integration_test/app_test.dart -d <device-id>
 
 Tes unit mencakup normalisasi kueri (vektor uji dari versi Android), trigram,
 pemeringkatan, penanda hasil, pencarian Latin dan Arab terhadap database asli,
-serta widget kartu hasil dan daftar contoh. Tes integrasi memverifikasi
-pencarian Latin, pencarian Arab FTS4, dan pembukaan halaman detail di Android.
+serta widget kartu hasil dan daftar contoh. `test/sqlite3_database_test.dart`
+menjalankan adapter SQL yang dipakai web (di atas SQLite sistem yang memiliki
+FTS4) dan membandingkan hasilnya dengan adapter `sqflite`: id, skor, dan rentang
+highlight harus identik. Tes integrasi memverifikasi pencarian Latin, pencarian
+Arab FTS4, dan pembukaan halaman detail di Android.
 
 ## Struktur proyek
 
@@ -126,7 +160,7 @@ lib/
   app.dart                 MaterialApp, tema, dan delegate lokalisasi
   main.dart                Titik masuk; memuat pengaturan
   core/                    Warna, tema, string Indonesia, scope pengaturan
-  data/                    Salinan database, DAO, pengaturan, status panduan
+  data/                    Salinan database, adapter SQL, DAO, pengaturan
   models/                  Model ayat, hasil pencarian, dan highlight
   search/                  Normalisasi, trigram, skor, highlight, FTS Arab
   screens/                 Splash, beranda, detail, pengaturan, bantuan, about
@@ -136,6 +170,11 @@ assets/
   databases/lafzi.sqlite   Database Al-Qur'an dan indeks pencarian
   fonts/me_quran.ttf       Font Qur'an
   images/                  Logo dan ikon aplikasi
+tool/
+  build_sqlite3_wasm.sh    Build SQLite WebAssembly dengan FTS3/FTS4
+web/
+  index.html               Layar peluncuran statis dan bootstrap Flutter
+  sqlite3.wasm             SQLite WebAssembly (build khusus, di-commit)
 ```
 
 ## Database dan pencarian
@@ -143,6 +182,12 @@ assets/
 Database `lafzi.sqlite` dibundel sebagai aset dan disalin ke direktori database
 aplikasi pada peluncuran pertama (atau saat versi aset berubah). Database dibuka
 secara read-only.
+
+Di web tidak ada penyalinan ke disk: aset diunduh, ditulis ke virtual file
+system SQLite di memori, lalu dibuka read-only. Splash menutupi proses ini dan
+database dimuat ulang pada setiap pemuatan halaman. Karena database bersifat
+statis dan read-only, tidak ada data pengguna yang perlu disimpan di browser
+selain pengaturan dan status panduan (`shared_preferences`).
 
 - Pencarian Latin menormalkan kueri, memecahnya menjadi trigram, mengambil
   posting dari `vocal_index`/`nonvocal_index`, lalu memeringkat dokumen dengan
@@ -160,6 +205,9 @@ jumlah hasil, urutan dokumen, skor, dan rentang highlight identik.
 Android memakai `RecognizerIntent` sistem (jalur yang sama dengan versi Java).
 iOS dan macOS memakai paket `speech_to_text` dengan locale Arab pertama yang
 didukung perangkat (`ar-AE`, `ar-SA`, `ar-EG`, lalu locale `ar*` lainnya).
+Di web, `speech_to_text` memakai Web Speech API peramban; dukungan locale Arab
+dan ketersediaan mikrofon bergantung pada peramban (Chrome/Edge), dan halaman
+harus disajikan lewat HTTPS atau localhost.
 Aplikasi meminta izin mikrofon dan pengenalan suara; selama sesi berjalan,
 banner "Mendengarkan…" tampil di atas kolom pencarian dan dapat diketuk untuk
 berhenti. Jika sesi gagal, aplikasi membedakan izin ditolak, layanan tidak
