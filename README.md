@@ -14,7 +14,10 @@ font, dan tampilan yang dipertahankan.
   langsung dari implementasi Android.
 - Pencarian teks Arab memakai tabel FTS4 `quran_text` yang dibundel di database.
 - Hasil berupa kartu ayat dengan penanda kuning pada bagian yang cocok,
-  terjemahan Indonesia, dan penghitung hasil.
+  terjemahan Indonesia, persentase relevansi (skor kemiripan) beserta bilah
+  progres untuk hasil pencarian Latin, dan penghitung hasil. Angka relevansi
+  sama dengan persentase pada web Lafzi asli (misalnya `allahu samad`:
+  100%, 79%, 47%).
 - Halaman detail dengan `PageView` untuk seluruh 6.236 ayat, tombol
   Sebelum/Berikut, serta pembagian teks atau gambar (JPEG) lewat lembar sistem.
 - Daftar contoh pencarian yang berganti otomatis setiap enam detik.

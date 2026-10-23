@@ -72,8 +72,30 @@ class AyatCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (ayat.relevance > 0) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        '${ayat.relevance.round()}%',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: scheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
+                if (ayat.relevance > 0) ...[
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: LinearProgressIndicator(
+                      value: (ayat.relevance / 100).clamp(0.0, 1.0),
+                      minHeight: 3,
+                      backgroundColor: scheme.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation<Color>(scheme.primary),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 14),
                 HighlightedArabicText(
                   text: ayat.displayArabic,

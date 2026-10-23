@@ -44,6 +44,12 @@ void main() {
     expect(results.first.relevance, lessThanOrEqualTo(100));
   });
 
+  test('relevance matches the original web search percentages', () async {
+    final results = await engine.search('allahu samad', isVocal: true);
+    expect(results.map((a) => a.id), [6223, 2900, 289]);
+    expect(results.map((a) => a.relevance), [100, 79, 47]);
+  });
+
   test('unknown Latin input returns no results', () async {
     expect(await engine.search('zzzzzzz', isVocal: true), isEmpty);
   });

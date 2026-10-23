@@ -45,6 +45,34 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 
+  testWidgets('result card shows the relevance percentage when scored', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        AyatCard(
+          ayat: _sampleAyat()..relevance = 79,
+          position: 2,
+          showTranslation: false,
+        ),
+      ),
+    );
+
+    expect(find.text('79%'), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('result card hides relevance for unscored results', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(AyatCard(ayat: _sampleAyat(), position: 2, showTranslation: false)),
+    );
+
+    expect(find.textContaining('%'), findsNothing);
+    expect(find.byType(LinearProgressIndicator), findsNothing);
+  });
+
   testWidgets('result card hides translation when disabled', (tester) async {
     await tester.pumpWidget(
       _wrap(AyatCard(ayat: _sampleAyat(), position: 2, showTranslation: false)),
