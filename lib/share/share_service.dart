@@ -59,7 +59,15 @@ class ShareService {
   }) async {
     final media = MediaQuery.of(context);
     final theme = Theme.of(context);
-    final defaultTextStyle = DefaultTextStyle.of(context).style;
+    // Use the theme's body style rather than DefaultTextStyle.of(context):
+    // the ambient default at the share entry point can be Flutter's error-box
+    // style (monospace, yellow underline), which would leak into the image.
+    final defaultTextStyle = (theme.textTheme.bodyMedium ?? const TextStyle())
+        .copyWith(
+          decoration: TextDecoration.none,
+          decorationColor: null,
+          backgroundColor: null,
+        );
 
     // `captureFromWidget` clamps the off-screen render to the browser viewport,
     // which crops long ayat. The long-widget variant measures the card first
