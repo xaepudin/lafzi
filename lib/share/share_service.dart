@@ -45,12 +45,13 @@ class ShareService {
   ///
   /// Only exposed by the web build, where the system share sheet may not offer
   /// a save option.
-  Future<void> saveImage({
+  /// Returns false when the user cancels the native save dialog.
+  Future<bool> saveImage({
     required BuildContext context,
     required AyatQuran ayat,
   }) async {
     final jpeg = await _renderJpeg(context: context, ayat: ayat);
-    await downloadImage(jpeg, name: _imageName());
+    return downloadImage(jpeg, name: _imageName());
   }
 
   Future<Uint8List> _renderJpeg({

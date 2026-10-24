@@ -324,6 +324,13 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: AppBar(
           titleSpacing: 8,
+          leading: hasText
+              ? IconButton(
+                  tooltip: AppStrings.back,
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: _clearSearch,
+                )
+              : null,
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

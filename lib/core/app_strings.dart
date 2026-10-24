@@ -17,6 +17,7 @@ abstract final class AppStrings {
   static const queryLessThan3 = 'Lafaz dicari minimal 3 karakter';
   static const copied = 'Text disalin';
   static const bagikan = 'Bagikan';
+  static const back = 'Kembali';
   static const berikut = 'Berikut';
   static const sebelum = 'Sebelum';
 

@@ -13,6 +13,8 @@ font, dan tampilan yang dipertahankan.
   mengabaikannya. Normalisasi fonetis dan pemeringkatan relevansi diporting
   langsung dari implementasi Android.
 - Pencarian teks Arab memakai tabel FTS4 `quran_text` yang dibundel di database.
+- Tombol kembali di app bar saat pencarian aktif; menekannya membersihkan
+  kueri dan hasil, sama seperti tombol back sistem.
 - Hasil berupa kartu ayat dengan penanda kuning pada bagian yang cocok,
   terjemahan Indonesia, dan penghitung hasil. Untuk hasil pencarian Latin,
   persentase relevansi (tingkat kesamaan) beserta bilah progres dapat
@@ -20,8 +22,9 @@ font, dan tampilan yang dipertahankan.
   persentase pada web Lafzi asli (misalnya `allahu samad`: 100%, 79%, 47%).
 - Halaman detail dengan `PageView` untuk seluruh 6.236 ayat, tombol
   Sebelum/Berikut, serta pembagian teks atau gambar (JPEG) lewat lembar sistem.
-  Gambar memuat nama surat, nomor surat, dan nomor ayat; di web tersedia opsi
-  "Unduh gambar" selain lembar berbagi sistem.
+  Gambar memuat nama surat, nomor surat, dan nomor ayat. Opsi "Unduh gambar"
+  tersedia di semua platform: web mengunduh lewat peramban, Android/iOS membuka
+  dialog simpan sistem, dan macOS menyimpan ke folder Downloads.
 - Daftar contoh pencarian yang berganti otomatis setiap enam detik.
 - Panduan awal (coach marks) dengan sorotan pada kolom pencarian, tombol suara,
   dan daftar contoh. Panduan dapat diputar ulang dari menu.
@@ -51,7 +54,8 @@ font, dan tampilan yang dipertahankan.
   otomatis tidak menampilkan langkah suara. Berbagi memakai Web Share API (di
   macOS Chrome/Safari tampil sebagai lembar berbagi sistem), dan tombol "Unduh
   gambar" mengunduh JPEG langsung karena lembar sistem tidak selalu
-  menyediakan opsi simpan.
+  menyediakan opsi simpan. Di Android/iOS tombol yang sama membuka dialog
+  simpan, sedangkan di macOS file masuk ke folder Downloads.
 - **Linux/Windows** — belum dikonfigurasi. Windows memiliki dukungan suara dari
   `speech_to_text`, tetapi database perlu `sqflite_common_ffi` dengan SQLite
   ber-FTS4; Linux belum memiliki dukungan suara dari plugin tersebut.

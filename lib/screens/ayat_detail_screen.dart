@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../core/app_strings.dart';
@@ -141,21 +140,19 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
                   icon: const Icon(Icons.image_outlined),
                   label: const Text(AppStrings.shareImage),
                 ),
-                if (kIsWeb) ...[
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      _downloadImage(ayat);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      alignment: Alignment.centerLeft,
-                      minimumSize: const Size.fromHeight(48),
-                    ),
-                    icon: const Icon(Icons.download_outlined),
-                    label: const Text(AppStrings.downloadImage),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _downloadImage(ayat);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    minimumSize: const Size.fromHeight(48),
                   ),
-                ],
+                  icon: const Icon(Icons.download_outlined),
+                  label: const Text(AppStrings.downloadImage),
+                ),
                 const SizedBox(height: 8),
                 OutlinedButton.icon(
                   onPressed: () {
@@ -194,8 +191,10 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
   Future<void> _shareImage(AyatQuran ayat) {
     return _runImageAction(
       label: AppStrings.shareImage,
-      action: () =>
-          ShareService.instance.shareImage(context: context, ayat: ayat),
+      action: () async {
+        await ShareService.instance.shareImage(context: context, ayat: ayat);
+        return true;
+      },
     );
   }
 
@@ -210,7 +209,7 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
 
   Future<void> _runImageAction({
     required String label,
-    required Future<void> Function() action,
+    required Future<bool> Function() action,
     String? successMessage,
   }) async {
     if (!mounted) {
@@ -241,8 +240,9 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
     );
 
     var failed = false;
+    var succeeded = false;
     try {
-      await action();
+      succeeded = await action();
     } catch (_) {
       failed = true;
     } finally {
@@ -255,7 +255,7 @@ class _AyatDetailScreenState extends State<AyatDetailScreen> {
     }
     if (failed) {
       _showShareError();
-    } else if (successMessage != null) {
+    } else if (succeeded && successMessage != null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(successMessage)));
     }

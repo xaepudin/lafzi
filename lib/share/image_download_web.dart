@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:web/web.dart' as web;
 
 /// Triggers a browser download of [bytes] as [name].
-Future<void> downloadImage(Uint8List bytes, {required String name}) async {
+Future<bool> downloadImage(Uint8List bytes, {required String name}) async {
   final blob = web.Blob(
     [bytes.toJS as JSAny].toJS,
     web.BlobPropertyBag(type: 'image/jpeg'),
@@ -18,4 +18,5 @@ Future<void> downloadImage(Uint8List bytes, {required String name}) async {
   anchor.click();
   anchor.remove();
   web.URL.revokeObjectURL(url);
+  return true;
 }
