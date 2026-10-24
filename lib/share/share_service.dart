@@ -58,11 +58,33 @@ class ShareService {
     required AyatQuran ayat,
   }) async {
     final media = MediaQuery.of(context);
-    final bytes = await ScreenshotController().captureFromWidget(
-      ShareImageCard(ayat: ayat, width: media.size.width),
+    final theme = Theme.of(context);
+    final defaultTextStyle = DefaultTextStyle.of(context).style;
+
+    // `captureFromWidget` clamps the off-screen render to the browser viewport,
+    // which crops long ayat. The long-widget variant measures the card first
+    // and captures it at its full height. Both passes must see the same theme,
+    // text style and MediaQuery, otherwise the measured height is a few pixels
+    // short and the last line of the translation is clipped.
+    final card = Material(
+      color: Colors.transparent,
+      child: Theme(
+        data: theme,
+        child: DefaultTextStyle(
+          style: defaultTextStyle,
+          child: MediaQuery(
+            data: media,
+            child: ShareImageCard(ayat: ayat, width: media.size.width),
+          ),
+        ),
+      ),
+    );
+
+    final bytes = await ScreenshotController().captureFromLongWidget(
+      card,
       context: context,
       pixelRatio: media.devicePixelRatio,
-      delay: const Duration(milliseconds: 80),
+      delay: const Duration(milliseconds: 120),
     );
 
     final decoded = image_lib.decodePng(bytes);
