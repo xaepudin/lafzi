@@ -49,6 +49,8 @@ abstract final class AppStrings {
   static const shareSheetSubtitle = 'Pilih format pembagian';
   static const shareImage = 'Gambar';
   static const shareText = 'Teks';
+  static const downloadImage = 'Unduh gambar';
+  static const imageDownloaded = 'Gambar diunduh';
   static const toolbarLogo = 'Logo Lafzi';
   static const shareUsing = 'Bagikan Menggunakan';
 

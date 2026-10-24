@@ -5,6 +5,7 @@ import 'package:lafzi/core/app_theme.dart';
 import 'package:lafzi/models/ayat_quran.dart';
 import 'package:lafzi/widgets/ayat_card.dart';
 import 'package:lafzi/widgets/example_list.dart';
+import 'package:lafzi/widgets/share_image_card.dart';
 
 Widget _wrap(Widget child) {
   final theme = AppTheme.light();
@@ -114,6 +115,16 @@ void main() {
     );
 
     expect(find.textContaining('الٓمٓ'), findsOneWidget);
+  });
+
+  testWidgets('share image card includes the surah and ayah number', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(home: ShareImageCard(ayat: _sampleAyat(), width: 400)),
+    );
+
+    expect(find.text('Surat Al-Fatihah (1) Ayat 1'), findsOneWidget);
   });
 
   testWidgets('example list rotates every six seconds', (tester) async {

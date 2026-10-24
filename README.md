@@ -20,6 +20,8 @@ font, dan tampilan yang dipertahankan.
   persentase pada web Lafzi asli (misalnya `allahu samad`: 100%, 79%, 47%).
 - Halaman detail dengan `PageView` untuk seluruh 6.236 ayat, tombol
   Sebelum/Berikut, serta pembagian teks atau gambar (JPEG) lewat lembar sistem.
+  Gambar memuat nama surat, nomor surat, dan nomor ayat; di web tersedia opsi
+  "Unduh gambar" selain lembar berbagi sistem.
 - Daftar contoh pencarian yang berganti otomatis setiap enam detik.
 - Panduan awal (coach marks) dengan sorotan pada kolom pencarian, tombol suara,
   dan daftar contoh. Panduan dapat diputar ulang dari menu.
@@ -46,8 +48,10 @@ font, dan tampilan yang dipertahankan.
   FTS3/FTS4 karena build bawaan `sqlite3` hanya berisi FTS5; lihat
   `tool/build_sqlite3_wasm.sh`. Pencarian suara disembunyikan di web karena
   dukungan Web Speech API tidak konsisten; panduan awal dan halaman bantuan
-  otomatis tidak menampilkan langkah suara. Berbagi gambar memakai share sheet
-  peramban atau jatuh ke unduhan.
+  otomatis tidak menampilkan langkah suara. Berbagi memakai Web Share API (di
+  macOS Chrome/Safari tampil sebagai lembar berbagi sistem), dan tombol "Unduh
+  gambar" mengunduh JPEG langsung karena lembar sistem tidak selalu
+  menyediakan opsi simpan.
 - **Linux/Windows** — belum dikonfigurasi. Windows memiliki dukungan suara dari
   `speech_to_text`, tetapi database perlu `sqflite_common_ffi` dengan SQLite
   ber-FTS4; Linux belum memiliki dukungan suara dari plugin tersebut.
