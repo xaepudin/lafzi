@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'ayat_db.dart';
 
 /// Fallback used when neither `dart:io` nor `dart:js_interop` is available.
@@ -8,6 +10,10 @@ class DatabaseService {
   DatabaseService._();
 
   static final DatabaseService instance = DatabaseService._();
+
+  final ValueNotifier<double?> _downloadProgress = ValueNotifier<double?>(null);
+
+  ValueListenable<double?> get downloadProgress => _downloadProgress;
 
   AyatDb get database =>
       throw UnsupportedError('The database is not available on this platform');

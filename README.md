@@ -55,7 +55,8 @@ font, dan tampilan yang dipertahankan.
   macOS Chrome/Safari tampil sebagai lembar berbagi sistem), dan tombol "Unduh
   gambar" mengunduh JPEG langsung karena lembar sistem tidak selalu
   menyediakan opsi simpan. Di Android/iOS tombol yang sama membuka dialog
-  simpan, sedangkan di macOS file masuk ke folder Downloads.
+  simpan, sedangkan di macOS file masuk ke folder Downloads. Splash web
+  menampilkan persentase unduhan database (16 MB) sebelum aplikasi dibuka.
 - **Linux/Windows** — belum dikonfigurasi. Windows memiliki dukungan suara dari
   `speech_to_text`, tetapi database perlu `sqflite_common_ffi` dengan SQLite
   ber-FTS4; Linux belum memiliki dukungan suara dari plugin tersebut.

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,12 @@ class DatabaseService {
 
   AyatDb? _database;
   Future<AyatDb>? _opening;
+
+  final ValueNotifier<double?> _downloadProgress = ValueNotifier<double?>(null);
+
+  /// Download progress for the bundled database. Native builds copy from an
+  /// asset instead of downloading, so this stays indeterminate.
+  ValueListenable<double?> get downloadProgress => _downloadProgress;
 
   AyatDb get database {
     final db = _database;

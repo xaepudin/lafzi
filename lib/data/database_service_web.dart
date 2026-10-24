@@ -1,5 +1,9 @@
-import 'package:flutter/services.dart';
+import 'dart:async';
+import 'dart:js_interop';
+
+import 'package:flutter/foundation.dart';
 import 'package:sqlite3/wasm.dart';
+import 'package:web/web.dart' as web;
 
 import 'ayat_db.dart';
 import 'ayat_db_sqlite3.dart';
@@ -24,6 +28,12 @@ class DatabaseService {
 
   WasmSqlite3? _sqlite;
   InMemoryFileSystem? _fileSystem;
+
+  final ValueNotifier<double?> _downloadProgress = ValueNotifier<double?>(null);
+
+  /// Fraction of the bundled database downloaded, or null while the wasm
+  /// module is loading or the total size is unknown.
+  ValueListenable<double?> get downloadProgress => _downloadProgress;
 
   AyatDb get database {
     final db = _database;
@@ -69,11 +79,9 @@ class DatabaseService {
   }
 
   Future<InMemoryFileSystem> _mountDatabase(WasmSqlite3 sqlite) async {
-    final data = await rootBundle.load(DatabaseMetadata.assetPath);
-    final bytes = data.buffer.asUint8List(
-      data.offsetInBytes,
-      data.lengthInBytes,
-    );
+    _downloadProgress.value = 0;
+    final bytes = await _downloadDatabase();
+    _downloadProgress.value = 1;
 
     final fileSystem = InMemoryFileSystem();
     final file = fileSystem
@@ -90,6 +98,58 @@ class DatabaseService {
 
     sqlite.registerVirtualFileSystem(fileSystem, makeDefault: true);
     return fileSystem;
+  }
+
+  /// Fetches the database as a byte array while reporting progress.
+  ///
+  /// `rootBundle.load` exposes no progress, so the asset is requested directly
+  /// with XHR. The URL is the same one Flutter uses for the asset, which means
+  /// the service worker can still serve it from its cache.
+  Future<Uint8List> _downloadDatabase() {
+    final completer = Completer<Uint8List>();
+    final url = Uri.base
+        .resolve('assets/${DatabaseMetadata.assetPath}')
+        .toString();
+    final xhr = web.XMLHttpRequest()
+      ..open('GET', url)
+      ..responseType = 'arraybuffer';
+
+    xhr.onprogress = ((web.ProgressEvent event) {
+      if (event.lengthComputable && event.total > 0) {
+        _downloadProgress.value = (event.loaded / event.total).clamp(0.0, 1.0);
+      }
+    }).toJS;
+
+    xhr.onerror = ((web.Event event) {
+      if (!completer.isCompleted) {
+        completer.completeError(
+          StateError('Unable to download the Lafzi database'),
+        );
+      }
+    }).toJS;
+
+    xhr.onload = ((web.Event event) {
+      if (completer.isCompleted) {
+        return;
+      }
+      if (xhr.status != 200) {
+        completer.completeError(
+          StateError('Database download failed (HTTP ${xhr.status})'),
+        );
+        return;
+      }
+      final response = xhr.response;
+      if (response == null || !response.isA<JSArrayBuffer>()) {
+        completer.completeError(
+          StateError('Database download returned an unexpected response'),
+        );
+        return;
+      }
+      completer.complete((response as JSArrayBuffer).toDart.asUint8List());
+    }).toJS;
+
+    xhr.send();
+    return completer.future;
   }
 
   Future<void> close() async {

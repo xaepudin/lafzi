@@ -91,13 +91,49 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   const SizedBox(height: 32),
                   if (_error == null)
-                    SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
+                    ValueListenableBuilder<double?>(
+                      valueListenable:
+                          DatabaseService.instance.downloadProgress,
+                      builder: (context, progress, _) {
+                        if (!kIsWeb) {
+                          return SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: Colors.white.withValues(alpha: 0.9),
+                            ),
+                          );
+                        }
+                        final percent = progress == null
+                            ? null
+                            : (progress * 100).round();
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 3,
+                                color: Colors.white.withValues(alpha: 0.9),
+                                backgroundColor: Colors.white24,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              percent == null
+                                  ? AppStrings.preparingDatabase
+                                  : AppStrings.downloadingDatabase(percent),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.9),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     )
                   else ...[
                     const Text(

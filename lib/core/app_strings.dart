@@ -2,6 +2,10 @@
 abstract final class AppStrings {
   static const appName = 'Lafzi';
 
+  static const preparingDatabase = 'Menyiapkan database…';
+  static String downloadingDatabase(int percent) =>
+      'Mengunduh database… $percent%';
+
   static const bantuan = 'Bantuan';
   static const pengaturan = 'Pengaturan';
   static const about = 'Tentang Lafzi';
