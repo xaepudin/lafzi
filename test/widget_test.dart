@@ -117,6 +117,19 @@ void main() {
     expect(find.textContaining('الٓمٓ'), findsOneWidget);
   });
 
+  testWidgets('result card uses a uniform outline instead of elevation', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(AyatCard(ayat: _sampleAyat(), position: 1, showTranslation: false)),
+    );
+
+    final card = tester.widget<Card>(find.byType(Card).first);
+    expect(card.elevation, 0);
+    final shape = card.shape as RoundedRectangleBorder;
+    expect(shape.side, isNot(BorderSide.none));
+  });
+
   testWidgets('share image card includes the surah and ayah number', (
     tester,
   ) async {

@@ -33,9 +33,14 @@ class AyatCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Card(
-        elevation: 1,
+        // A flat card with an explicit outline keeps all four edges equally
+        // visible; elevation shadows only darken the bottom edge.
+        elevation: 0,
         color: scheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: scheme.outlineVariant),
+        ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
