@@ -305,6 +305,13 @@ class _HomeScreenState extends State<HomeScreen> {
         .push(MaterialPageRoute<void>(builder: (_) => const HelpScreen()));
   }
 
+  void _openSourceCode() {
+    launchUrl(
+      Uri.parse(AppStrings.aboutSourceLink),
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
   void _openAbout() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const AboutScreen()));
@@ -358,26 +365,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   _listening ? Icons.stop_circle : Icons.mic_none,
                   color: _listening ? scheme.primary : scheme.onSurfaceVariant,
                 ),
-              )
-            else
-              // The web build has no speech recognizer, so the same slot links
-              // to the source repository (the GPL-3.0 source offer).
-              IconButton(
-                tooltip: AppStrings.sourceCode,
-                onPressed: () {
-                  launchUrl(
-                    Uri.parse(AppStrings.aboutSourceLink),
-                    mode: LaunchMode.externalApplication,
-                  );
-                },
-                icon: Image.asset(
-                  'assets/images/github_mark.png',
-                  width: 22,
-                  height: 22,
-                  color: scheme.onSurfaceVariant,
-                  colorBlendMode: BlendMode.srcIn,
-                  semanticLabel: AppStrings.sourceCode,
-                ),
               ),
             PopupMenuButton<String>(
               tooltip: 'Menu',
@@ -396,9 +383,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   case 'about':
                     _openAbout();
                     break;
+                  case 'source':
+                    _openSourceCode();
+                    break;
                 }
               },
-              itemBuilder: (context) => const [
+              itemBuilder: (context) => <PopupMenuItem<String>>[
                 PopupMenuItem(
                   value: 'panduan',
                   child: Text(AppStrings.panduan),
@@ -412,6 +402,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(AppStrings.pengaturan),
                 ),
                 PopupMenuItem(value: 'about', child: Text(AppStrings.about)),
+                PopupMenuItem(
+                  value: 'source',
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/github_mark.png',
+                        width: 18,
+                        height: 18,
+                        color: scheme.onSurfaceVariant,
+                        colorBlendMode: BlendMode.srcIn,
+                        excludeFromSemantics: true,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(AppStrings.sourceCode),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],

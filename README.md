@@ -59,8 +59,9 @@ asli, karena keduanya memakai nama paket yang berbeda.
   kesamaan* di Pengaturan; persentase dan bilahnya muncul di setiap kartu hasil.
 - **Pencarian suara** memerlukan koneksi internet pada sebagian perangkat,
   karena memakai layanan pengenalan suara bawaan sistem.
-- **Di web**, ikon mikrofon diganti tautan ke kode sumber, karena dukungan
-  pengenalan suara Arab di peramban belum konsisten.
+- **Pencarian suara tidak tersedia di web**, karena dukungan Web Speech API
+  untuk bahasa Arab belum konsisten antarperamban. Kode sumber aplikasi bisa
+  dibuka dari menu **⋮ → Kode sumber**.
 
 ## Lisensi dan kredit
 
@@ -72,6 +73,10 @@ karya proyek Lafzi dan para kontributornya (Copyright © 2017–2019), termasuk
 Alfat Saputra Harun dan Muhammad Abrari. Rincian perubahan, atribusi, dan
 ketentuan aset pihak ketiga ada di [NOTICE](NOTICE) dan
 [docs/licensing.md](docs/licensing.md).
+
+Basis data dan indeks pencariannya dibangun dengan
+[lafzi-indexer](https://github.com/lafzi/lafzi-indexer), memakai teks Al-Qur'an
+dari [Tanzil](https://tanzil.net).
 
 Kode sumber: <https://github.com/xaepudin/lafzi>
 

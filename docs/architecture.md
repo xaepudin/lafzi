@@ -5,6 +5,10 @@ Catatan teknis tentang cara kerja Lafzi. Untuk menyiapkan lingkungan build lihat
 
 ## Database
 
+Database dihasilkan oleh proyek
+[`lafzi-indexer`](https://github.com/lafzi/lafzi-indexer): teks Tanzil diubah
+menjadi kode fonetis, diindeks, lalu diekspor ke SQLite.
+
 `assets/databases/lafzi.sqlite` dibundel sebagai aset dan disalin ke direktori
 database aplikasi pada peluncuran pertama (atau saat versi aset berubah).
 Database dibuka secara read-only.

@@ -53,8 +53,9 @@ Statement of modification (GPL-3.0 section 5(a))
 Bundled assets
 --------------
   assets/databases/lafzi.sqlite
-      Quran text, Indonesian translation and search indexes, taken from
-      the upstream Lafzi Android application.
+      Quran text, Indonesian translation and search indexes, built with
+      lafzi/lafzi-indexer (GPL-3.0 as declared in its README) from the Tanzil
+      Quran text and an Indonesian translation. See docs/licensing.md.
 
   assets/fonts/me_quran.ttf
       "Me Quran" font, taken from the upstream Lafzi Android application.
