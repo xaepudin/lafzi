@@ -1,4 +1,4 @@
-package org.lafzi.lafzi
+package com.xaepudin.lafzi
 
 import android.Manifest
 import android.app.Activity
@@ -145,7 +145,7 @@ class MainActivity : FlutterActivity() {
     }
 
     companion object {
-        private const val SPEECH_CHANNEL = "org.lafzi.lafzi.flutter/speech"
+        private const val SPEECH_CHANNEL = "com.xaepudin.lafzi/speech"
         private const val SPEECH_REQUEST = 4217
         private const val PERMISSION_REQUEST = 4218
     }

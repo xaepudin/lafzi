@@ -13,25 +13,27 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  late final TapGestureRecognizer _linkRecognizer;
+  late final Map<String, TapGestureRecognizer> _linkRecognizers;
   late final Future<PackageInfo> _packageInfo;
 
   @override
   void initState() {
     super.initState();
     _packageInfo = PackageInfo.fromPlatform();
-    _linkRecognizer = TapGestureRecognizer()
-      ..onTap = () {
-        launchUrl(
-          Uri.parse(AppStrings.aboutLink),
-          mode: LaunchMode.externalApplication,
-        );
-      };
+    _linkRecognizers = <String, TapGestureRecognizer>{
+      for (final link in AppStrings.aboutLinks)
+        link: TapGestureRecognizer()
+          ..onTap = () {
+            launchUrl(Uri.parse(link), mode: LaunchMode.externalApplication);
+          },
+    };
   }
 
   @override
   void dispose() {
-    _linkRecognizer.dispose();
+    for (final recognizer in _linkRecognizers.values) {
+      recognizer.dispose();
+    }
     super.dispose();
   }
 
@@ -89,25 +91,42 @@ class _AboutScreenState extends State<AboutScreen> {
 
   List<InlineSpan> _buildSpans(ThemeData theme) {
     final text = AppStrings.aboutText;
-    final split = text.split(AppStrings.aboutLink);
+    final linkStyle = TextStyle(
+      color: theme.colorScheme.primary,
+      decoration: TextDecoration.underline,
+    );
     final spans = <InlineSpan>[];
-    for (var i = 0; i < split.length; i++) {
-      if (split[i].isNotEmpty) {
-        spans.add(TextSpan(text: split[i]));
+    var index = 0;
+    while (index < text.length) {
+      final next = _nextLinkAt(text, index);
+      if (next == null) {
+        spans.add(TextSpan(text: text.substring(index)));
+        break;
       }
-      if (i < split.length - 1) {
-        spans.add(
-          TextSpan(
-            text: AppStrings.aboutLink,
-            style: TextStyle(
-              color: theme.colorScheme.primary,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: _linkRecognizer,
-          ),
-        );
+      final (link, start) = next;
+      if (start > index) {
+        spans.add(TextSpan(text: text.substring(index, start)));
       }
+      spans.add(
+        TextSpan(
+          text: link,
+          style: linkStyle,
+          recognizer: _linkRecognizers[link],
+        ),
+      );
+      index = start + link.length;
     }
     return spans;
+  }
+
+  /// Earliest occurrence of any about link at or after [from], if any.
+  (String, int)? _nextLinkAt(String text, int from) {
+    (String, int)? earliest;
+    for (final link in AppStrings.aboutLinks) {
+      final start = text.indexOf(link, from);
+      if (start < 0) continue;
+      if (earliest == null || start < earliest.$2) earliest = (link, start);
+    }
+    return earliest;
   }
 }

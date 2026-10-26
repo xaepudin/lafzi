@@ -19,7 +19,7 @@
     </queries>
 
     <application
-        android:label="Lafzi Flutter"
+        android:label="Lafzi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true">

@@ -8,7 +8,7 @@
 PRODUCT_NAME = lafzi
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = org.lafzi.lafzi.flutter
+PRODUCT_BUNDLE_IDENTIFIER = com.xaepudin.lafzi
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 Lafzi contributors. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 Asep Saepudin. Licensed under GPL-3.0.

@@ -30,7 +30,7 @@ enum SpeechFailure {
 /// the `SpeechRecognizer` locale list. iOS and macOS use `speech_to_text`.
 class SpeechService {
   static const _androidChannel = MethodChannel(
-    'org.lafzi.lafzi.flutter/speech',
+    'com.xaepudin.lafzi/speech',
   );
 
   // `dart:io`'s Platform is not available on the web; the browser uses the

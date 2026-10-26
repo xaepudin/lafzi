@@ -19,7 +19,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Lafzi</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>Lafzi</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

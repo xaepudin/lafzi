@@ -1,0 +1,84 @@
+Lafzi — copyright and attribution notice
+========================================
+
+  (This is the Flutter port of Lafzi Android. The product is called
+  "Lafzi"; the upstream Android app is referred to here as "Lafzi Android".)
+
+This application is a derivative work (a port) of Lafzi Android.
+
+Upstream work
+-------------
+  Name:        Lafzi Android ("Lafzi untuk Android")
+  Source:      https://github.com/lafzi/lafzi-android
+  Copyright:   Copyright (C) 2017-2019 the Lafzi project and its
+               contributors, including Alfat Saputra Harun and
+               Muhammad Abrari.
+  License:     GNU General Public License, version 3 (see LICENSE)
+
+  The upstream work is itself based on research from the Department of
+  Computer Science, Faculty of Mathematics and Natural Sciences, IPB
+  University (Institut Pertanian Bogor).
+
+This work
+---------
+  Name:        Lafzi (Flutter port of Lafzi Android)
+  Source:      https://github.com/xaepudin/lafzi
+  Web:         https://lafzi.pages.dev
+  Copyright:   Copyright (C) 2026 Asep Saepudin
+  License:     GNU General Public License, version 3 (see LICENSE)
+
+  The Dart/Flutter implementation, and the iOS, macOS and web targets,
+  are new work derived from the upstream Java/Android application.
+
+Statement of modification (GPL-3.0 section 5(a))
+------------------------------------------------
+  This is a modified version of Lafzi Android, ported to Flutter and
+  modified in October 2026. It is not the original application, and the
+  original authors are not responsible for the changes made here.
+
+  Principal changes:
+    - Rewritten from Java/Android to Dart/Flutter.
+    - New targets: iOS, macOS and web (in addition to Android).
+    - Search normalisation, trigram ranking and highlight logic
+      reimplemented in Dart and validated against the Java reference
+      implementation.
+    - SQLite access rewritten to support sqflite and a WebAssembly
+      build for the web target.
+    - New UI (Material 3), settings, onboarding guide, share-as-image
+      and voice search on iOS/macOS.
+    - Application ID is com.xaepudin.lafzi, distinct from the original
+      org.lafzi.lafzi, so both apps can be installed side by side.
+    - Android application label is "Lafzi".
+
+Bundled assets
+--------------
+  assets/databases/lafzi.sqlite
+      Quran text, Indonesian translation and search indexes, taken from
+      the upstream Lafzi Android application.
+
+  assets/fonts/me_quran.ttf
+      "Me Quran" font, taken from the upstream Lafzi Android application.
+      This font is distributed under its own terms; see the font's own
+      documentation before redistributing.
+
+  assets/images/app_icon.png, assets/images/logo_lafzi_small.png
+      Lafzi logo artwork, taken from the upstream Lafzi Android project.
+
+  If you redistribute this application, verify that the database content
+  (Quran translation) and the font may be redistributed under terms
+  compatible with the GPL-3.0.
+
+License
+-------
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or (at
+  your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.

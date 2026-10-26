@@ -89,37 +89,58 @@ abstract final class AppStrings {
   static const showTranslationSummary =
       'Tampilkan terjemahan bahasa Indonesia di hasil pencarian';
 
-  static const aboutText =
+  /// Source repository of the Android application this project is a port of.
+  static const aboutUpstreamLink = 'https://github.com/lafzi/lafzi-android';
+
+  /// Public repository of this project. GPL-3.0 requires that whoever receives
+  /// a build can obtain its source code, so this is the source offer shown in
+  /// the About screen.
+  static const aboutSourceLink = 'https://github.com/xaepudin/lafzi';
+
+  /// Web build of this project, deployed from `build/web`.
+  static const aboutWebLink = 'https://lafzi.pages.dev';
+
+  static const aboutLicenseLink = 'https://www.gnu.org/licenses/gpl-3.0.html';
+
+  /// Links rendered as tappable text in [aboutText], in order of appearance.
+  static List<String> get aboutLinks => <String>[
+        aboutUpstreamLink,
+        aboutWebLink,
+        aboutSourceLink,
+        aboutLicenseLink,
+      ];
+
+  static String get aboutText {
+    final paragraphs = <String>[
       'Lafzi adalah aplikasi pencari lafadz pada Al-Quran. Aplikasi ini dibuat '
-      'untuk memudahkan pencarian ayat dengan lafadz tertentu pada Al-Quran '
-      'hanya dengan aksara Latin biasa berdasarkan pelafalan pembicara bahasa '
-      'Indonesia, tanpa perlu mengetikkannya dalam aksara Arab.\n\n'
-      'Lafzi untuk Android ini adalah aplikasi open source yang didasarkan pada '
-      'hasil penelitian skripsi Departemen Ilmu Komputer, Fakultas MIPA '
-      'Institut Pertanian Bogor.\n\n'
-      'Kunjungi https://github.com/lafzi untuk melihat source code Lafzi.';
-  static const aboutLink = 'https://github.com/lafzi';
+          'untuk memudahkan pencarian ayat dengan lafadz tertentu pada Al-Quran '
+          'hanya dengan aksara Latin biasa berdasarkan pelafalan pembicara '
+          'bahasa Indonesia, tanpa perlu mengetikkannya dalam aksara Arab.',
+      'Lafzi berawal dari penelitian skripsi Departemen Ilmu Komputer, '
+          'Fakultas MIPA, Institut Pertanian Bogor, lalu dirilis sebagai '
+          'aplikasi Android open source.',
+      'Versi Flutter ini adalah port dari Lafzi Android ($aboutUpstreamLink), '
+          'yang dikembangkan proyek Lafzi dan para kontributornya, '
+          'Copyright (C) 2017-2019. Aplikasi ini bukan aplikasi asli dan '
+          'didistribusikan di bawah GNU General Public License v3.0 '
+          '($aboutLicenseLink).',
+      if (aboutWebLink.isNotEmpty) 'Versi web: $aboutWebLink',
+      if (aboutSourceLink.isNotEmpty) 'Source code: $aboutSourceLink',
+    ];
+    return paragraphs.join('\n\n');
+  }
   static String aboutTitle(String version) => 'Lafzi versi $version';
 
+  /// Two rows of three, matching the three-up layout of the example card on
+  /// the empty home screen. The list mixes Latin and Arabic queries because
+  /// both search modes are supported.
   static const exampleQueries = <String>[
-    'bismillah',
-    'alhamdulillah',
-    'allahu samad',
-    'maliki yaumid din',
-    'iyyaka nabudu',
-    'ihdinas siratal mustaqim',
-    'inna lillahi',
-    'hasbunallahu',
-    'la yukallifullahu',
-    "ma'al usri yusra",
-    'rabbi zidni ilma',
-    'qul huwallahu ahad',
-    'lam yalid wa lam yulad',
-    'birabbil falaq',
-    'birabbin nas',
-    'wa la tahinu wa la tahzanu',
-    'rahmatan lil alamin',
-    'wa ma arsalnaka',
+    'wala aula dukum',
+    'إن سميع الدعاء',
+    'ulil albab',
+    'koddamat ligod',
+    'وخلق منها زوجها',
+    'yabunayya',
   ];
 
   static const helpHeaderOrder = 'Urutan hasil pencarian';
