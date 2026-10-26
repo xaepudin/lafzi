@@ -57,6 +57,7 @@ abstract final class AppStrings {
   static const downloadImage = 'Unduh gambar';
   static const imageDownloaded = 'Gambar diunduh';
   static const toolbarLogo = 'Logo Lafzi';
+  static const sourceCode = 'Kode sumber di GitHub';
   static const shareUsing = 'Bagikan Menggunakan';
 
   static const gagalMembagi = 'Gagal Membagi';

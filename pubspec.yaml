@@ -1,7 +1,7 @@
 name: lafzi
 description: "Lafzi — Quran lafadz search by Indonesian pronunciation, built with Flutter."
 publish_to: 'none'
-version: 2.2.0+17
+version: 2.2.1+18
 
 environment:
   sdk: ^3.13.5

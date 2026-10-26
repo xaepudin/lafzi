@@ -64,6 +64,10 @@ Bundled assets
   assets/images/app_icon.png, assets/images/logo_lafzi_small.png
       Lafzi logo artwork, taken from the upstream Lafzi Android project.
 
+  assets/images/github_mark.png
+      GitHub logo (Octocat), a trademark of GitHub, Inc., used to link to
+      this project's source repository.
+
   If you redistribute this application, verify that the database content
   (Quran translation) and the font may be redistributed under terms
   compatible with the GPL-3.0.

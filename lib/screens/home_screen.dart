@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/app_colors.dart';
 import '../core/app_strings.dart';
@@ -356,6 +357,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(
                   _listening ? Icons.stop_circle : Icons.mic_none,
                   color: _listening ? scheme.primary : scheme.onSurfaceVariant,
+                ),
+              )
+            else
+              // The web build has no speech recognizer, so the same slot links
+              // to the source repository (the GPL-3.0 source offer).
+              IconButton(
+                tooltip: AppStrings.sourceCode,
+                onPressed: () {
+                  launchUrl(
+                    Uri.parse(AppStrings.aboutSourceLink),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+                icon: Image.asset(
+                  'assets/images/github_mark.png',
+                  width: 22,
+                  height: 22,
+                  color: scheme.onSurfaceVariant,
+                  colorBlendMode: BlendMode.srcIn,
+                  semanticLabel: AppStrings.sourceCode,
                 ),
               ),
             PopupMenuButton<String>(
