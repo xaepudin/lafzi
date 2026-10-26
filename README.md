@@ -113,9 +113,9 @@ APK release:
 flutter build apk --release
 ```
 
-Build release memakai debug signing key dari template Flutter. Ganti
-`signingConfig` di `android/app/build.gradle.kts` dengan keystore rilis sebelum
-mendistribusikan ke Play Store. R8/code shrinking dimatikan (`shrink=false`)
+Build release otomatis memakai keystore dari `android/key.properties` bila
+berkas itu ada; tanpa berkas tersebut build memakai debug key (lihat bagian
+CI/CD untuk mengisinya lewat secret). R8/code shrinking dimatikan (`shrink=false`)
 karena versi Android asli juga tidak memakainya dan plugin Flutter memerlukan
 signature Kotlin yang utuh untuk pemanggilan reflektif.
 
@@ -317,3 +317,55 @@ tetap GPL-3.0.
 Aset yang dibundel (`assets/databases/lafzi.sqlite`, `assets/fonts/me_quran.ttf`,
 dan logo) berasal dari proyek asal dan memiliki ketentuan masing-masing; lihat
 [NOTICE](NOTICE) sebelum mendistribusikan ulang.
+
+## CI/CD (GitHub Actions)
+
+Tiga workflow berjalan di GitHub Actions, semuanya memakai Flutter 3.47.7:
+
+| Workflow | Pemicu | Yang dilakukan |
+| --- | --- | --- |
+| `.github/workflows/ci.yml` | push ke `main`, pull request | `flutter analyze` dan `flutter test` |
+| `.github/workflows/web.yml` | push ke `main` yang menyentuh `lib/`, `web/`, `assets/`, `pubspec.*` | analyze, test, `flutter build web --release --no-web-resources-cdn`, lalu deploy ke Cloudflare Pages (`lafzi`) |
+| `.github/workflows/release.yml` | tag `v*` atau manual | APK per-ABI + AAB, `.app` + `.dmg` + `.zip` macOS, IPA iOS (unsigned), lalu GitHub Release berisi semua artefak |
+
+### Secret yang diperlukan
+
+Untuk deploy web (wajib):
+
+- `CLOUDFLARE_API_TOKEN` — token dengan izin **Cloudflare Pages: Edit**
+  (My Profile → API Tokens → Create Token → template "Edit Cloudflare Workers"
+  atau custom dengan `Account → Cloudflare Pages → Edit`).
+- `CLOUDFLARE_ACCOUNT_ID` — terlihat di dashboard Cloudflare atau dari
+  `npx wrangler whoami`.
+
+Untuk APK/AAB yang bisa diunggah ke Play (opsional, tanpa ini artefak
+ditandatangani debug key dan ditolak Play):
+
+- `ANDROID_KEYSTORE_BASE64` — isi `upload-keystore.jks` yang di-encode base64:
+  `base64 -i upload-keystore.jks | pbcopy`.
+- `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
+
+Membuat keystore upload (simpan di tempat aman, jangan di repositori):
+
+```bash
+keytool -genkeypair -v -keystore upload-keystore.jks \
+  -keyalg RSA -keysize 4096 -validity 10000 -alias upload
+```
+
+### Merilis
+
+```bash
+# naikkan version di pubspec.yaml (mis. 2.2.1+18), commit, lalu:
+git tag v2.2.1
+git push origin main --tags
+```
+
+Artefak bisa diunduh dari halaman run Actions; pada tag, workflow `publish`
+juga membuat GitHub Release dengan semua berkas.
+
+Catatan: IPA yang dihasilkan **unsigned** — bisa dipasang lewat alat sideloading
+yang menandatangani ulang, tetapi unggah ke App Store memerlukan sertifikat dan
+provisioning profile. DMG macOS ditandatangani ad-hoc dan belum dinotarisasi,
+jadi pengguna perlu membuka lewat System Settings → Privacy & Security.
+Repositori privat memakai kuota menit Actions (macOS dihitung 10x); repositori
+publik gratis.

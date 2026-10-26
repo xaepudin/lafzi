@@ -49,3 +49,8 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Apple signing material: never commit these (see README, CI/CD).
+# Android keystores are covered by android/.gitignore.
+**/*.p12
+**/*.mobileprovision
