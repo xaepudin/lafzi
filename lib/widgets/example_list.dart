@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
+import '../core/arabic_text_style.dart';
 
 /// The rotating list of example queries shown on the empty home screen.
 class ExampleList extends StatefulWidget {
@@ -147,6 +148,10 @@ class ExampleListState extends State<ExampleList> {
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: theme.colorScheme.onSurface,
+                              fontFamily:
+                                  ArabicTextStyle.needsQuranFace(visible[i])
+                                      ? ArabicTextStyle.fontFamily
+                                      : null,
                             ),
                           ),
                         ),

@@ -116,6 +116,49 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // The service worker caches the app shell and the Quran database. Flutter
+    // only starts once it controls this page, otherwise the first visit's
+    // requests would bypass the cache and an offline reload would have nothing
+    // to serve.
+    (function () {
+      var started = false;
+
+      function startFlutter() {
+        if (started) return;
+        started = true;
+        var script = document.createElement('script');
+        script.src = 'flutter_bootstrap.js';
+        script.async = true;
+        document.body.appendChild(script);
+      }
+
+      if (!('serviceWorker' in navigator)) {
+        startFlutter();
+        return;
+      }
+
+      // Never let a missing or broken worker keep the app from starting.
+      var fallback = setTimeout(startFlutter, 4000);
+      var start = function () {
+        clearTimeout(fallback);
+        startFlutter();
+      };
+
+      navigator.serviceWorker.register('sw.js').then(function () {
+        return navigator.serviceWorker.ready;
+      }).then(function () {
+        if (navigator.serviceWorker.controller) return;
+        return new Promise(function (resolve) {
+          navigator.serviceWorker.addEventListener('controllerchange', resolve, {
+            once: true,
+          });
+        });
+      }).then(start).catch(function (error) {
+        console.warn('Lafzi: offline cache unavailable', error);
+        start();
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../core/app_colors.dart';
 import '../core/app_strings.dart';
+import '../core/arabic_text_style.dart';
 import '../core/platform_capabilities.dart';
 import '../data/ayat_repository.dart';
 import '../data/database_service.dart';
@@ -465,7 +466,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     textInputAction: TextInputAction.search,
                     onSubmitted: _submit,
                     maxLines: 1,
-                    style: TextStyle(color: scheme.onSurface, fontSize: 16),
+                    style: TextStyle(
+                      color: scheme.onSurface,
+                      fontSize: 16,
+                      fontFamily:
+                          ArabicTextStyle.needsQuranFace(_queryController.text)
+                              ? ArabicTextStyle.fontFamily
+                              : null,
+                    ),
                     decoration: InputDecoration(
                       hintText: AppStrings.searchHint,
                       hintStyle: TextStyle(

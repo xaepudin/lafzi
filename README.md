@@ -134,8 +134,12 @@ flutter build ios --simulator
 Build web:
 
 ```bash
-flutter build web --release
+flutter build web --release --no-web-resources-cdn
 ```
+
+Flag `--no-web-resources-cdn` wajib dipakai: tanpa itu CanvasKit dan font
+bawaan diambil dari CDN Google, sehingga tidak bisa disimpan oleh service
+worker dan aplikasi gagal tampil saat luring.
 
 Hasilnya ada di `build/web`. Deployment produksi memakai Cloudflare Pages di
 <https://lafzi.pages.dev>, dengan penanganan 404 kustom dari `web/404.html`
@@ -144,10 +148,31 @@ aplikasi. Sajikan direktori itu sebagai situs statis dan
 pastikan `.wasm` dikirim sebagai `application/wasm`, karena modul SQLite dimuat
 dengan `WebAssembly.instantiateStreaming`. Pada kunjungan pertama, halaman
 mengunduh `lafzi.sqlite` (16 MB; sekitar 4,8 MB bila server mengaktifkan gzip)
-lalu menyalinnya ke memori. Kunjungan berikutnya memakai cache HTTP peramban.
-Build Flutter saat ini tidak menyediakan cache luring: `flutter_service_worker.js`
-yang ikut ter-build hanya mencabut registrasi service worker lama, sehingga
-tidak ada aset yang disimpan untuk mode luring.
+lalu menyalinnya ke memori.
+
+### Mode luring (web)
+
+`web/sw.js` adalah service worker sendiri, terpisah dari
+`flutter_service_worker.js` bawaan Flutter (yang hanya mencabut registrasi
+lama). `web/flutter_bootstrap.js` mematikan pendaftaran service worker Flutter
+agar keduanya tidak berebut satu scope yang sama.
+
+- Saat instalasi, service worker menyimpan kerangka aplikasi (HTML, bootstrap,
+  manifest, ikon). Berkas lain disimpan saat halaman yang sudah dikendalikan
+  memintanya, jadi tidak ada daftar aset yang perlu disinkronkan dengan hasil
+  build.
+- `index.html` baru memuat Flutter setelah service worker mengendalikan
+  halaman, sehingga kunjungan pertama pun sudah mengisi cache. Dengan begitu
+  aplikasi bisa dibuka luring setelah sekali dibuka saat daring.
+- Database (16 MB) disimpan di cache terpisah. Perubahan deploy dideteksi lewat
+  ETag `main.dart.js` (kerangka diambil ulang) dan ETag `lafzi.sqlite`
+  (database diambil ulang), jadi tidak perlu menaikkan versi cache manual.
+- Ukuran cache setelah sekali kunjungan sekitar 25 MB (16 MB database, sisanya
+  CanvasKit dan kode aplikasi).
+- Bila service worker gagal dipasang, halaman tetap memuat aplikasi seperti
+  biasa setelah 4 detik; mode luring saja yang tidak aktif.
+- Service worker butuh HTTPS (atau `localhost`); Cloudflare Pages sudah
+  memenuhinya.
 
 Berkas `web/sqlite3.wasm` sudah disertakan di repositori. Jika versi paket
 `sqlite3` di `pubspec.yaml` dinaikkan, bangun ulang dengan:
@@ -197,7 +222,10 @@ assets/
 tool/
   build_sqlite3_wasm.sh    Build SQLite WebAssembly dengan FTS3/FTS4
 web/
-  index.html               Layar peluncuran statis dan bootstrap Flutter
+  index.html               Layar peluncuran statis dan pendaftaran service worker
+  flutter_bootstrap.js     Bootstrap kustom (CanvasKit lokal, SW Flutter mati)
+  sw.js                    Service worker: cache kerangka dan database
+  404.html                 Halaman 404 untuk Cloudflare Pages
   sqlite3.wasm             SQLite WebAssembly (build khusus, di-commit)
 ```
 
