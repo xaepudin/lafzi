@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Halaman tidak ditemukan — Lafzi</title>
+    <style>
+      :root {
+        --bg: #f7fbf4;
+        --fg: #1b1c19;
+        --muted: #4f6352;
+        --primary: #005500;
+        --surface: #ffffff;
+        --outline: #d2e8d3;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101410;
+          --fg: #e2e3dd;
+          --muted: #b8ccb9;
+          --primary: #7edb78;
+          --surface: #1a1f1a;
+          --outline: #2f3a30;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: Roboto, "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+      main {
+        max-width: 28rem;
+        padding: 32px;
+        text-align: center;
+        background: var(--surface);
+        border: 1px solid var(--outline);
+        border-radius: 24px;
+      }
+      .code {
+        margin: 0 0 8px;
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--primary);
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 1.25rem;
+      }
+      p.body {
+        margin: 0 0 24px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      a {
+        display: inline-block;
+        padding: 12px 24px;
+        border-radius: 999px;
+        background: var(--primary);
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      a:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+      }
+      @media (prefers-color-scheme: dark) {
+        a {
+          color: #04140a;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="code">404</p>
+      <h1>Halaman tidak ditemukan</h1>
+      <p class="body">
+        Alamat yang Anda buka tidak ada di Lafzi. Mungkin tautannya salah ketik
+        atau sudah dipindahkan.
+      </p>
+      <a href="/">Buka pencarian Lafzi</a>
+    </main>
+  </body>
+</html>

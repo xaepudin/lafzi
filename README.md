@@ -138,12 +138,16 @@ flutter build web --release
 ```
 
 Hasilnya ada di `build/web`. Deployment produksi memakai Cloudflare Pages di
-<https://lafzi.pages.dev>. Sajikan direktori itu sebagai situs statis dan
+<https://lafzi.pages.dev>, dengan penanganan 404 kustom dari `web/404.html`
+sehingga alamat yang tidak ada mengembalikan status 404, bukan halaman
+aplikasi. Sajikan direktori itu sebagai situs statis dan
 pastikan `.wasm` dikirim sebagai `application/wasm`, karena modul SQLite dimuat
 dengan `WebAssembly.instantiateStreaming`. Pada kunjungan pertama, halaman
 mengunduh `lafzi.sqlite` (16 MB; sekitar 4,8 MB bila server mengaktifkan gzip)
-lalu menyalinnya ke memori. Kunjungan berikutnya memakai cache HTTP dan service
-worker peramban.
+lalu menyalinnya ke memori. Kunjungan berikutnya memakai cache HTTP peramban.
+Build Flutter saat ini tidak menyediakan cache luring: `flutter_service_worker.js`
+yang ikut ter-build hanya mencabut registrasi service worker lama, sehingga
+tidak ada aset yang disimpan untuk mode luring.
 
 Berkas `web/sqlite3.wasm` sudah disertakan di repositori. Jika versi paket
 `sqlite3` di `pubspec.yaml` dinaikkan, bangun ulang dengan:
