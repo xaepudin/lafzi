@@ -72,12 +72,40 @@ jobs:
             "$APKSIGNER" verify --print-certs "$apk" | grep -E "Signer #1 certificate DN|SHA-256"
           done
 
+      - name: Name artifacts
+        run: |
+          VERSION=$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)
+          for apk in build/app/outputs/flutter-apk/*-release.apk; do
+            abi=$(basename "$apk" | sed -E 's/^app-(.*)-release\.apk$/\1/')
+            cp "$apk" "lafzi-$VERSION-$abi.apk"
+          done
+          cp build/app/outputs/bundle/release/app-release.aab "lafzi-$VERSION.aab"
+          ls -l lafzi-*
+
+      # One artifact per architecture, so a download is a single APK rather than
+      # a bundle with every ABI. Release assets are direct files anyway.
       - uses: actions/upload-artifact@v4
         with:
-          name: android
-          path: |
-            build/app/outputs/flutter-apk/*.apk
-            build/app/outputs/bundle/release/*.aab
+          name: android-arm64-v8a
+          path: lafzi-*-arm64-v8a.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-armeabi-v7a
+          path: lafzi-*-armeabi-v7a.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-x86_64
+          path: lafzi-*-x86_64.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-bundle
+          path: lafzi-*.aab
           if-no-files-found: error
 
   macos:
@@ -108,14 +136,11 @@ jobs:
           test -n "$APP"
           echo "Packaging $APP ($VERSION)"
           hdiutil create -volname "Lafzi" -srcfolder "$APP" -ov -format UDZO "Lafzi-$VERSION.dmg"
-          ditto -c -k --keepParent "$APP" "Lafzi-$VERSION-macos.zip"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: macos
-          path: |
-            Lafzi-*.dmg
-            Lafzi-*-macos.zip
+          name: macos-dmg
+          path: Lafzi-*.dmg
           if-no-files-found: error
 
   ios:
@@ -149,7 +174,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ios
+          name: ios-ipa
           path: Lafzi-*-unsigned.ipa
           if-no-files-found: error
 

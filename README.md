@@ -326,7 +326,7 @@ Tiga workflow berjalan di GitHub Actions, semuanya memakai Flutter 3.47.7:
 | --- | --- | --- |
 | `.github/workflows/ci.yml` | push ke `main`, pull request | `flutter analyze` dan `flutter test` |
 | `.github/workflows/web.yml` | push ke `main` yang menyentuh `lib/`, `web/`, `assets/`, `pubspec.*` | analyze, test, `flutter build web --release --no-web-resources-cdn`, lalu deploy ke Cloudflare Pages (`lafzi`) |
-| `.github/workflows/release.yml` | tag `v*` atau manual | APK per-ABI + AAB, `.app` + `.dmg` + `.zip` macOS, IPA iOS (unsigned), lalu GitHub Release berisi semua artefak |
+| `.github/workflows/release.yml` | tag `v*` atau manual | APK per-ABI (satu artefak per arsitektur), AAB, DMG macOS, IPA iOS (unsigned); pada tag juga membuat GitHub Release |
 
 ### Secret yang diperlukan
 
@@ -360,8 +360,20 @@ git tag v2.2.1
 git push origin main --tags
 ```
 
-Artefak bisa diunduh dari halaman run Actions; pada tag, workflow `publish`
-juga membuat GitHub Release dengan semua berkas.
+Hanya **tag** yang memicu workflow ini secara otomatis — push biasa ke `main`
+tidak. Menjalankan manual dari tab Actions tetap menghasilkan artefak, tetapi
+tanpa GitHub Release, sehingga tiap artefak diunduh sebagai zip.
+
+Pada tag, workflow `publish` membuat GitHub Release dan menaruh setiap berkas
+sebagai aset terpisah, jadi APK per arsitektur bisa diunduh langsung tanpa
+membongkar zip:
+
+- `lafzi-<versi>-arm64-v8a.apk` — HP Android modern
+- `lafzi-<versi>-armeabi-v7a.apk` — perangkat lama 32-bit
+- `lafzi-<versi>-x86_64.apk` — emulator
+- `lafzi-<versi>.aab` — unggahan Play Store
+- `Lafzi-<versi>.dmg` — macOS
+- `Lafzi-<versi>-unsigned.ipa` — iOS (perlu ditandatangani ulang)
 
 Catatan: IPA yang dihasilkan **unsigned** — bisa dipasang lewat alat sideloading
 yang menandatangani ulang, tetapi unggah ke App Store memerlukan sertifikat dan
